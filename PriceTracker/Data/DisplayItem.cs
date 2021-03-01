@@ -9,7 +9,7 @@ namespace PriceTracker.Data
     {
 
         public string ItemName { get; set; }
-        public int ItemPrice { get; set; }
+        public double ItemPrice { get; set; }
         public string ItemLink { get; set; }
 
     }

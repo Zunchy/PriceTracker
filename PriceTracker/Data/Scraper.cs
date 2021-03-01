@@ -33,13 +33,13 @@ namespace PriceTracker.Data
 
 
             // Search For Products
-  
+
             driver.Navigate().GoToUrl("https://www.mercari.com/search/?keyword=dragonball");
             //IReadOnlyCollection<IWebElement> test = driver.FindElements(By.TagName("li"));
             IReadOnlyCollection<IWebElement> searchSpace = driver.FindElements(By.XPath("//div[@data-testid=\"ItemContainer\"]"));
 
             String result = "";
-            foreach(IWebElement item in searchSpace)
+            foreach (IWebElement item in searchSpace)
             {
                 IWebElement itemContent = item.FindElement(By.XPath("./.."));
                 String link = itemContent.GetAttribute("href");
@@ -48,7 +48,7 @@ namespace PriceTracker.Data
                 result += "\r\n";
                 result += link;
                 result += "END ITEM";
-    
+
             }
 
             return result;
@@ -72,5 +72,33 @@ namespace PriceTracker.Data
 
         }
 
+        public String ScrapeEBid()
+        {
+            // Search For Products
+
+            driver.Navigate().GoToUrl("https://www.ebid.net/us/perl/main.cgi?go=1&mo=search&category=&type=keyword&words=dragonball&categoryid=");
+            //IReadOnlyCollection<IWebElement> test = driver.FindElements(By.TagName("li"));
+            IReadOnlyCollection<IWebElement> searchSpace = driver.FindElements(By.XPath("//li[@class='showroomcell']"));
+
+
+            String result = "";
+            foreach (IWebElement item in searchSpace)
+            {
+
+                String name = item.FindElement(By.TagName("h2")).Text;
+                String price = item.FindElement(By.ClassName("dkgrey")).Text;
+                String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+
+                result += name;
+                result += "\r\n";
+                result += price;
+                result += "\r\n";
+                result += link;
+                result += "END ITEM";
+
+            }
+
+            return result;
+        }
     }
 }
