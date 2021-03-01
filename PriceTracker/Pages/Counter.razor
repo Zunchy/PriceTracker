@@ -1,16 +1,35 @@
 ﻿@page "/counter"
 
-<h1>Counter</h1>
+<h1>Search</h1>
 
-<p>Current count: @currentCount</p>
+<button class="btn btn-primary" @onclick="IncrementCount">Search</button>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@foreach (DisplayItem item in displayItems)
+{
+
+    <p>Name: @item.ItemName</p>
+    <p>Price: @item.ItemPrice</p>
+    <a href="@item.ItemLink"><p>Link: @item.ItemLink</p></a>
+    <br>
+
+}
+
 
 @code {
-    private int currentCount = 0;
+
+    String mercariData = "";
+    String eBidData = "";
+    List<DisplayItem> displayItems = new List<DisplayItem>();
+    DataFormater formater = new DataFormater();
 
     private void IncrementCount()
     {
-        currentCount++;
+        Scraper scraper = new Scraper();
+
+        //mercariData = scraper.ScrapeMercari();
+        //displayItems = formater.FormatMercari(mercariData);
+        eBidData = scraper.ScrapeEBid();
+        displayItems = formater.FormatEBid(eBidData);
     }
 }
