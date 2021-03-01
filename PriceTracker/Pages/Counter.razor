@@ -6,11 +6,33 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+
+@foreach (DisplayItem item in displayItems)
+{
+
+    <p>Name: @item.ItemName</p>
+    <p>Price: @item.ItemPrice</p>
+    <a href="@item.ItemLink"><p>Link: @item.ItemLink</p></a>
+    <br>
+
+}
+
+
 @code {
+
     private int currentCount = 0;
+    String mercariData = "";
+    List<DisplayItem> displayItems = new List<DisplayItem>();
 
     private void IncrementCount()
     {
+        Scraper scraper = new Scraper();
+        mercariData = scraper.ScrapeMercari();
+
+        DataFormater formater = new DataFormater();
+
+        displayItems = formater.FormatMercari(mercariData);
+
         currentCount++;
     }
 }
