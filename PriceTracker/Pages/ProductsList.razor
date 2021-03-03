@@ -1,0 +1,48 @@
+﻿@page "/productslist"
+
+@using PriceTracker.Data
+@inject getProducts ForecastService
+
+<h1>Product Results:</h1>
+
+<p>Displays a list of products</p>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Last Date Scraped</th>
+                <th>Price</th>
+                <th>Lowest Price</th>
+                <th>Review</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.productName</td>
+                    <td>@product.Date.ToShortDateString()</td>
+                    <td>@product.currentPrice</td>
+                    <td>@product.lowestPrice</td>
+                    <td>@product.Review</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Product[] products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ForecastService.GetProductAsync(DateTime.Now);
+    }
+}
