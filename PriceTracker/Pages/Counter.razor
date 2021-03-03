@@ -20,6 +20,8 @@
 
     String mercariData = "";
     String eBidData = "";
+    String poshMarkData = "";
+    String eCraterData = "";
     List<DisplayItem> displayItems = new List<DisplayItem>();
     DataFormater formater = new DataFormater();
 
@@ -27,9 +29,18 @@
     {
         Scraper scraper = new Scraper();
 
-        //mercariData = scraper.ScrapeMercari();
+        //mercariData = scraper.ScrapeMercari("Dragonball");
         //displayItems = formater.FormatMercari(mercariData);
-        eBidData = scraper.ScrapeEBid();
-        displayItems = formater.FormatEBid(eBidData);
+        //eBidData = scraper.ScrapeEBid("Pokemon");
+        //displayItems = formater.FormatEBid(eBidData);
+        //poshMarkData = scraper.ScrapePoshmark("nike shoes");
+        //displayItems = formater.FormatPoshmark(poshMarkData);
+        //eCraterData = scraper.ScrapeEcrater("pokemon");
+        //displayItems = formater.FormatEcrater(eCraterData);
+
+        //scraper.ScrapePriceMercari("https://www.mercari.com/us/item/m47509174330/");
+        //scraper.ScrapePriceByEbidItem("https://www.ebid.net/us/for-sale/dragonball-complete-series-dvd-brand-new-sealed-region-free-198700982.htm");
+        //scraper.ScrapePriceByPoshmarkItem("https://poshmark.com/listing/Pokemon-Pikachu-Black-Shirt-Size-Youth-XLarge-5ebd839cc2d1da400495d663");
+        scraper.ScrapePriceByEcraterItem("https://www.ecrater.com/p/31467818/ed-dickson-2014-topps-309-baltimore-ravens");
     }
 }
