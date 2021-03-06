@@ -9,15 +9,23 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<p><b>Testing Session Token Refresh</b></p>
+<p>@requestSessionToken</p>
+
+<p>
+    Testing Requests
+</p>
 <p>
     @requestContentString
 </p>
 
 @code {
+    private string requestSessionToken;
     private string requestContentString;
 
     protected override async Task OnInitializedAsync()
     {
+        requestSessionToken = await ProductService.RequestClientTokenAsync();
         requestContentString = await ProductService.SearchProductAsync("Pokemon", 5);
     }
 
