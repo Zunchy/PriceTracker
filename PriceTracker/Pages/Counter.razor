@@ -12,21 +12,53 @@
 <p><b>Testing Session Token Refresh</b></p>
 <p>@requestSessionToken</p>
 
-<p>
-    Testing Requests
-</p>
-<p>
-    @requestContentString
-</p>
+<p><b>Testing Requests</b></p>
+@if (displayItems == null)
+{
+    <p>Null</p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item Source</th>
+            <th>Product Image</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Product Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DisplayItem item in displayItems)
+        {
+            <tr>
+                <td>Ebay</td>
+                <td><img src="@item.ItemImage"></td>
+                <td>@item.ItemName</td>
+                <td>$@item.ItemPrice</td>
+                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Ebay</a></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 
 @code {
     private string requestSessionToken;
-    private string requestContentString;
+    private List<DisplayItem> displayItems = new List<DisplayItem>();
 
     protected override async Task OnInitializedAsync()
     {
         requestSessionToken = await ProductService.RequestClientTokenAsync();
-        requestContentString = await ProductService.SearchProductAsync("Pokemon", 5);
+
+        displayItems = new List<DisplayItem>();
+        displayItems = await ProductService.SearchProductAsync("Pokemon", 20);
+    }
+
+    public void InitiateTrack(String link)
+    {
+        // Process of tracking an item
     }
 
 
