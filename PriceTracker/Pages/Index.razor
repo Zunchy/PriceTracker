@@ -1,7 +1,25 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<h1>Search for a product</h1>
+<input type="text" @onkeyup=Enter @bind-value="searchTerm" />
+<button class="btn btn-primary" @onclick="GoToProductsComponent">
+    Find Product
+</button>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    //https://docs.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-3.1#uri-and-navigation-state-helpers
+    private string searchTerm;
+
+    private void GoToProductsComponent()
+    {
+        NavigationManager.NavigateTo("productslist");
+    }
+
+    private void Enter()
+    {
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+            GoToProductsComponent();
+    }
+}

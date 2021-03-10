@@ -1,18 +1,46 @@
 ﻿@page "/counter"
 
-<h1>Counter</h1>
+<h1>Search</h1>
 
-<p>Current count: @currentCount</p>
+<button class="btn btn-primary" @onclick="IncrementCount">Search</button>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@foreach (DisplayItem item in displayItems)
+{
+
+    <p>Name: @item.ItemName</p>
+    <p>Price: @item.ItemPrice</p>
+    <a href="@item.ItemLink"><p>Link: @item.ItemLink</p></a>
+    <br>
+
+}
+
 
 @code {
-    private int currentCount = 0;
+
+    String mercariData = "";
+    String eBidData = "";
+    String poshMarkData = "";
+    String eCraterData = "";
+    List<DisplayItem> displayItems = new List<DisplayItem>();
+    DataFormater formater = new DataFormater();
 
     private void IncrementCount()
     {
-        currentCount++;
-        currentCount++;
+        Scraper scraper = new Scraper();
 
+        //mercariData = scraper.ScrapeMercari("Dragonball");
+        //displayItems = formater.FormatMercari(mercariData);
+        //eBidData = scraper.ScrapeEBid("Pokemon");
+        //displayItems = formater.FormatEBid(eBidData);
+        //poshMarkData = scraper.ScrapePoshmark("nike shoes");
+        //displayItems = formater.FormatPoshmark(poshMarkData);
+        //eCraterData = scraper.ScrapeEcrater("pokemon");
+        //displayItems = formater.FormatEcrater(eCraterData);
+
+        //scraper.ScrapePriceMercari("https://www.mercari.com/us/item/m47509174330/");
+        //scraper.ScrapePriceByEbidItem("https://www.ebid.net/us/for-sale/dragonball-complete-series-dvd-brand-new-sealed-region-free-198700982.htm");
+        //scraper.ScrapePriceByPoshmarkItem("https://poshmark.com/listing/Pokemon-Pikachu-Black-Shirt-Size-Youth-XLarge-5ebd839cc2d1da400495d663");
+        scraper.ScrapePriceByEcraterItem("https://www.ecrater.com/p/31467818/ed-dickson-2014-topps-309-baltimore-ravens");
     }
 }
