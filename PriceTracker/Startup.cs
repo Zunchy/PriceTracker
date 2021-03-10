@@ -41,6 +41,10 @@ namespace PriceTracker
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddSingleton<getProducts>();
+            /*services.Configure<MvcOptions>(options =>
+            { options.Filters.Add(new RequireHttpsAttribute());});
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
