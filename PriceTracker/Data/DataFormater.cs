@@ -23,6 +23,8 @@ namespace PriceTracker.Data
 
                     newItem.ItemName = itemInfo.First();
 
+                    itemInfo.Remove(itemInfo.First());
+
                     List<String> priceInfo = itemInfo.Find(x => x.Contains('$')).Split(' ').ToList();
 
                     if (!priceInfo.First().Contains('$'))
@@ -31,6 +33,10 @@ namespace PriceTracker.Data
                     }
 
                     newItem.ItemPrice = Double.Parse(priceInfo.First().Substring(1, priceInfo.First().Length - 1));
+
+                    newItem.ItemImage = itemInfo.Last();
+
+                    itemInfo.Remove(itemInfo.Last());
 
                     newItem.ItemLink = itemInfo.Last();
 
@@ -57,7 +63,13 @@ namespace PriceTracker.Data
 
                     newItem.ItemName = itemInfo.First();
 
-                    newItem.ItemPrice = Double.Parse(itemInfo[1].Substring(1, itemInfo[1].Length - 1));
+                    itemInfo.Remove(itemInfo.First());
+
+                    newItem.ItemPrice = Double.Parse(itemInfo.First().Substring(1, itemInfo.First().Length - 1));
+
+                    newItem.ItemImage = itemInfo.Last();
+
+                    itemInfo.Remove(itemInfo.Last());
 
                     newItem.ItemLink = itemInfo.Last();
 
@@ -78,15 +90,21 @@ namespace PriceTracker.Data
             foreach (String item in dataItems)
             {
                 List<String> itemInfo = item.Split("\r\n").ToList();
-                if (itemInfo.Count > 1)
+                if (itemInfo.Count > 3)
                 {
                     DisplayItem newItem = new DisplayItem();
 
                     newItem.ItemName = itemInfo.First();
 
+                    itemInfo.Remove(itemInfo.First());
+
                     List<String> priceInfo = itemInfo.Find(x => x.Contains('$')).Split(' ').ToList();
 
                     newItem.ItemPrice = Double.Parse(priceInfo.First().Substring(1, priceInfo.First().Length - 1));
+
+                    newItem.ItemImage = itemInfo.Last();
+
+                    itemInfo.Remove(itemInfo.Last());
 
                     newItem.ItemLink = itemInfo.Last();
 
@@ -114,6 +132,10 @@ namespace PriceTracker.Data
                     newItem.ItemName = itemInfo[1];
 
                     newItem.ItemPrice = Double.Parse(itemInfo.First().Substring(1, itemInfo.First().Length - 1));
+
+                    newItem.ItemImage = itemInfo.Last();
+
+                    itemInfo.Remove(itemInfo.Last());
 
                     newItem.ItemLink = itemInfo.Last();
 
