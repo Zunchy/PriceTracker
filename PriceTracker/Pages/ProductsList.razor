@@ -1,48 +1,96 @@
-﻿@page "/productslist"
+﻿@page "/productslist/{searchTerm}"
 
-@using PriceTracker.Data
-@inject getProducts ForecastService
+<h1>Product Results for: @searchTerm</h1>
 
-<h1>Product Results:</h1>
-
-<p>Displays a list of products</p>
-
-@if (products == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item Source</th>
+            <th>Product Image</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Product Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DisplayItem item in displayItemsMercari)
+        {
             <tr>
-                <th>Product</th>
-                <th>Last Date Scraped</th>
-                <th>Price</th>
-                <th>Lowest Price</th>
-                <th>Review</th>
+                <td>Mercari</td>
+                <td><img src="@item.ItemImage"></td>
+                <td>@item.ItemName</td>
+                <td>$@item.ItemPrice</td>
+                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Mercari</a></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in products)
-            {
-                <tr>
-                    <td>@product.productName</td>
-                    <td>@product.Date.ToShortDateString()</td>
-                    <td>@product.currentPrice</td>
-                    <td>@product.lowestPrice</td>
-                    <td>@product.Review</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+        }
+
+        @foreach (DisplayItem item in displayItemsEbid)
+        {
+            <tr>
+                <td>eBid</td>
+                <td><img src="@item.ItemImage"></td>
+                <td>@item.ItemName</td>
+                <td>$@item.ItemPrice</td>
+                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on ebid</a></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+            </tr>
+        }
+
+        @foreach (DisplayItem item in displayItemsPoshmark)
+        {
+            <tr>
+                <td>Poshmark</td>
+                <td><img src="@item.ItemImage"></td>
+                <td>@item.ItemName</td>
+                <td>$@item.ItemPrice</td>
+                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Poshmark</a></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+            </tr>
+        }
+
+        @foreach (DisplayItem item in displayItemsEcrater)
+        {
+            <tr>
+                <td>eCrater</td>
+                <td><img src="@item.ItemImage"></td>
+                <td>@item.ItemName</td>
+                <td>$@item.ItemPrice</td>
+                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on eCrater</a></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
 
 @code {
-    private Product[] products;
+
+    [Parameter]
+    public String searchTerm { get; set; }
+
+    DataFormater formater = new DataFormater();
+    Scraper scraper = new Scraper();
+
+    List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
+    List<DisplayItem> displayItemsEbid = new List<DisplayItem>();
+    List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
+    List<DisplayItem> displayItemsEcrater = new List<DisplayItem>();
+
 
     protected override async Task OnInitializedAsync()
     {
-        products = await ForecastService.GetProductAsync(DateTime.Now);
+
+        Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
+            () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
+            () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
+            () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+
+    }
+
+    public void InitiateTrack(String link)
+    {
+        // Process of tracking an item
     }
 }

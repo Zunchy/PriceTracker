@@ -14,7 +14,7 @@
 
     private void GoToProductsComponent()
     {
-        NavigationManager.NavigateTo("productslist");
+        NavigationManager.NavigateTo($"productslist/{searchTerm}");
     }
 
     private void Enter()
