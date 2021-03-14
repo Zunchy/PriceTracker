@@ -1,4 +1,5 @@
 ﻿@page "/productslist/{searchTerm}"
+@inject EbayProductService ProductService
 
 <h1>Product Results for: @searchTerm</h1>
 
@@ -13,6 +14,18 @@
         </tr>
     </thead>
     <tbody>
+        @foreach (DisplayItem item in displayItemsEbay)
+        {
+            <tr>
+                <td>Ebay</td>
+                <td><img src="@item.ItemImage"></td>
+                <td>@item.ItemName</td>
+                <td>$@item.ItemPrice</td>
+                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Ebay</a></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+            </tr>
+        }
+
         @foreach (DisplayItem item in displayItemsMercari)
         {
             <tr>
@@ -73,6 +86,9 @@
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 
+    string tokenTest;
+
+    List<DisplayItem> displayItemsEbay = new List<DisplayItem>();
     List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
     List<DisplayItem> displayItemsEbid = new List<DisplayItem>();
     List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
@@ -81,12 +97,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-
+        displayItemsEbay = await ProductService.SearchProductAsync("Pokemon", 20);
+        /*
         Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
             () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
             () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
             () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
-
+        */
     }
 
     public void InitiateTrack(String link)
