@@ -1,4 +1,8 @@
 ﻿@page "/productslist/{searchTerm}"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ApplicationDbContext Context
 @inject EbayProductService ProductService
 
 <h1>Product Results for: @searchTerm</h1>
@@ -86,8 +90,6 @@
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 
-    string tokenTest;
-
     List<DisplayItem> displayItemsEbay = new List<DisplayItem>();
     List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
     List<DisplayItem> displayItemsEbid = new List<DisplayItem>();
@@ -106,8 +108,19 @@
         */
     }
 
-    public void InitiateTrack(String link)
+    public async Task InitiateTrack(String link)
     {
-        // Process of tracking an item
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            Context.TrackedItems.Add(new TrackedItem
+            {
+                UserId = user.Identity.Name,
+                ItemIdentifier = link,
+            });
+            await Context.SaveChangesAsync();
+        }
     }
 }

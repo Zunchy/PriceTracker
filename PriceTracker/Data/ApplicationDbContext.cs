@@ -12,5 +12,6 @@ namespace PriceTracker.Data
             : base(options)
         {
         }
+        public DbSet<TrackedItem> TrackedItems { get; set; }
     }
 }
