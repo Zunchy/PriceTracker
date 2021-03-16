@@ -1,5 +1,6 @@
 ﻿@page "/productslist/{searchTerm}"
 
+
 <h1>Product Results for: @searchTerm</h1>
 
 <table class="table">
@@ -67,6 +68,9 @@
 
 @code {
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     [Parameter]
     public String searchTerm { get; set; }
 
@@ -78,19 +82,35 @@
     List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
     List<DisplayItem> displayItemsEcrater = new List<DisplayItem>();
 
+    String currentUser; // email address of user
+
 
     protected override async Task OnInitializedAsync()
     {
 
+        // Gets current user, if no user is logged in, currentUser = null
+        AuthenticationState authState = await AuthenticationStateTask;
+        currentUser = authState.User.Identity.Name;
+
         Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
-            () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
-            () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
-            () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+        () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
+        () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
+        () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
 
     }
 
+    // Process of tracking an item user clicked on
     public void InitiateTrack(String link)
     {
-        // Process of tracking an item
+        ItemTracker tracker = new ItemTracker();
+
+        if (currentUser == null) // User is not logged in, redirect to login
+        {
+
+        }
+        else
+        {
+            tracker.CreateTrackedItemRelation(currentUser, link);
+        }
     }
 }
