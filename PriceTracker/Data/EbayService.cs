@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace PriceTracker.Data
 {
    
-    public class EbayProductService
+    public class EbayService
     {
         static HttpClient client;
         public IServiceProvider serviceProvider;
         private string currentToken;
 
-        public EbayProductService(IServiceProvider services)
+        public EbayService(IServiceProvider services)
         {
             client = new HttpClient();
             serviceProvider = services;
