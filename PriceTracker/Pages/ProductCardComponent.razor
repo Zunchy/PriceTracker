@@ -1,0 +1,57 @@
+﻿
+@if (prodName == null || prodPrice == null)
+{
+    <h2>Loading...</h2>
+}
+else
+{
+    @*<div class="col-4">
+            <div class="card">
+                <img class="card-img-top img-thumbnail" src="@imgSrc" alt="Card image" />
+                <div class="card-body">
+                    <h4 class="card-title">@prodName</h4>
+                    <p class="card-text">
+                        <span><strong>Role: </strong></span>
+                        <span>The role</span>
+                    </p>
+                    <p class="card-text">
+                        <span><strong>Depart: </strong></span>
+                        <span>The depart</span>
+                    </p>
+                    <div class="row">
+                        <div class="col-4">
+                            <a href="#" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <div class="col-4">
+        <div class="card border-dark">
+            <img class="card-img-top img-thumbnail" src="@prodImgSrc" alt="Card image" />
+            <div class="card-body">
+                <h4 class="card-title">@prodName</h4>
+                <p class="card-text">
+                    <span><strong>Price: $</strong></span>
+                    <span>@prodPrice</span>
+                </p>
+                <p class="card-text">
+                    <span><strong>Description: </strong></span>
+                    <span>Can maybe put description here if possible?</span>
+                </p>
+                <div class="row">
+                    <div class="col-4">
+                        <a href="@prodLink" class="btn btn-info btn-lg">View</a>
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <a href="#" class="btn btn-primary btn-lg">Track</a>
+                    </div><br />
+                </div>
+                <br />
+                <div class="card-footer">Product last updated X days ago</div>
+            </div>
+        </div>
+    </div>
+}

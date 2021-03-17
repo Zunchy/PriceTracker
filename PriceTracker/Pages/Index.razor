@@ -1,12 +1,51 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
 
+<head>
+    <title>Price Tracker - Home</title>
+</head>
+
 
 <h1>Search for a product</h1>
 <input type="text" @onkeyup=Enter @bind-value="searchTerm" />
 <button class="btn btn-primary" @onclick="GoToProductsComponent">
     Find Product
 </button>
+<br />
+
+@*<p>
+        <button class="btn btn-primary" type="button" data-toggle="collapse"
+                data-target="#collapseAdvSearch" aria-expanded="false"
+                aria-controls="collapseAdvSearch">
+            Button with data-target
+        </button>
+    </p>
+
+    <div class="collapse" id="collapseAdvSearch">
+        <div class="card card-body">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+        </div>
+    </div>*@
+
+
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Link with href
+    </a>
+</p>
+<div class="collapse" id="collapseExample">
+    <div class="card card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+    </div>
+</div>
+<br />
+<br />
+
+<button type="button" class="collapsible">Open Collapsible</button>
+<div class="content">
+    <p>Lorem ipsum...</p>
+</div>
+
 
 @code {
     //https://docs.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-3.1#uri-and-navigation-state-helpers
