@@ -2,7 +2,11 @@
 
 <h1>Product Results for: @searchTerm</h1>
 
-<table class="table">
+<p>
+<Searchcomponent></Searchcomponent>
+</p>
+
+<!--<table class="table">
     <thead>
         <tr>
             <th>Item Source</th>
@@ -12,20 +16,20 @@
             <th>Product Link</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody>-->
         @*@foreach (DisplayItem item in displayItemsMercari)
-        {
-            <tr>
-                <td>Mercari</td>
-                <td><img src="@item.ItemImage"></td>
-                <td>@item.ItemName</td>
-                <td>$@item.ItemPrice</td>
-                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Mercari</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
-            </tr>
-        }*@
+            {
+                <tr>
+                    <td>Mercari</td>
+                    <td><img src="@item.ItemImage"></td>
+                    <td>@item.ItemName</td>
+                    <td>$@item.ItemPrice</td>
+                    <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Mercari</a></td>
+                    <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+                </tr>
+            }*@
 
-        @foreach (DisplayItem item in displayItemsEbid)
+        <!--@foreach (DisplayItem item in displayItemsEbid)
         {
             <tr>
                 <td>eBid</td>
@@ -59,7 +63,7 @@
                 <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on eCrater</a></td>
                 <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
             </tr>
-        }
+        }-->
 
         @*@foreach (DisplayItem item in displayItemsMercari)
             {
@@ -67,50 +71,51 @@
             }*@
 
 
-    </tbody>
-</table>
+    <!--</tbody>
+</table>-->
 
 <div class="row">
-    @foreach (DisplayItem item in displayItemsMercari)
+    @foreach (DisplayItem item in displayAllItems)
     {
-        <ProductCardComponent prodImgSrc="@item.ItemImage" prodName="@item.ItemName"
+        <ProductCardComponent prodImgSrc="@item.ItemImage" 
+                              prodName  ="@item.ItemName"
                               prodPrice ="@item.ItemPrice.ToString()"
                               prodLink  ="@item.ItemLink"></ProductCardComponent>
     }
 </div>
 
 @*<div class="row">
-    @foreach (DisplayItem item in displayItemsMercari)
-    {
-        <div class="col-4">
-            <div class="card border-dark">
-                <img class="card-img-top img-thumbnail" src="@item.ItemImage" alt="Card image" />
-                <div class="card-body">
-                    <h4 class="card-title">@item.ItemName</h4>
-                    <p class="card-text">
-                        <span><strong>Price: $</strong></span>
-                        <span>@item.ItemPrice</span>
-                    </p>
-                    <p class="card-text">
-                        <span><strong>Description: </strong></span>
-                        <span>Can maybe put description here if possible?</span>
-                    </p>
-                    <div class="row">
-                        <div class="col-4">
-                            <a href="#" class="btn btn-info btn-lg">View</a>
+        @foreach (DisplayItem item in displayItemsMercari)
+        {
+            <div class="col-4">
+                <div class="card border-dark">
+                    <img class="card-img-top img-thumbnail" src="@item.ItemImage" alt="Card image" />
+                    <div class="card-body">
+                        <h4 class="card-title">@item.ItemName</h4>
+                        <p class="card-text">
+                            <span><strong>Price: $</strong></span>
+                            <span>@item.ItemPrice</span>
+                        </p>
+                        <p class="card-text">
+                            <span><strong>Description: </strong></span>
+                            <span>Can maybe put description here if possible?</span>
+                        </p>
+                        <div class="row">
+                            <div class="col-4">
+                                <a href="#" class="btn btn-info btn-lg">View</a>
+                            </div>
+                            <div class="col-4"></div>
+                            <div class="col-4">
+                                <a href="#" class="btn btn-primary btn-lg">Track</a>
+                            </div><br/>
                         </div>
-                        <div class="col-4"></div>
-                        <div class="col-4">
-                            <a href="#" class="btn btn-primary btn-lg">Track</a>
-                        </div><br/>
+                        <br />
+                        <div class="card-footer">Product last updated X days ago</div>
                     </div>
-                    <br />
-                    <div class="card-footer">Product last updated X days ago</div>
                 </div>
             </div>
-        </div>
-    }
-</div>*@
+        }
+    </div>*@
 
 
 @code {
@@ -122,18 +127,25 @@
     Scraper scraper = new Scraper();
 
     List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
-    List<DisplayItem> displayItemsEbid = new List<DisplayItem>();
+    //List<DisplayItem> displayItemsEbid      = new List<DisplayItem>();
     List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
     List<DisplayItem> displayItemsEcrater = new List<DisplayItem>();
+    List<DisplayItem> displayAllItems = new List<DisplayItem>();
 
 
     protected override async Task OnInitializedAsync()
     {
+        if (displayAllItems.Count > 0)
+            displayAllItems.Clear();
 
-        Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)));//,
-                                                                                                               //() => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
-                                                                                                               //() => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
-                                                                                                               //() => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+        Parallel.Invoke(() => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
+                    //() => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
+                    () => displayItemsPoshmark  = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
+                    () => displayItemsEcrater   = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+        displayAllItems.AddRange(displayItemsMercari);
+        //displayAllItems.AddRange(displayItemsEbid);
+        displayAllItems.AddRange(displayItemsPoshmark);
+        displayAllItems.AddRange(displayItemsEcrater);
 
     }
 

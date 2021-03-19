@@ -1,17 +1,16 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
 
-<head>
-    <title>Price Tracker - Home</title>
-</head>
 
 
 <h1>Search for a product</h1>
-<input type="text" @onkeyup=Enter @bind-value="searchTerm" />
+@*<input type="text" @onkeyup=Enter @bind-value="searchTerm" />
 <button class="btn btn-primary" @onclick="GoToProductsComponent">
     Find Product
-</button>
-<br />
+</button>*@
+<p>
+<Searchcomponent></Searchcomponent>
+</p>
 
 @*<p>
         <button class="btn btn-primary" type="button" data-toggle="collapse"
@@ -28,23 +27,24 @@
     </div>*@
 
 
-<p>
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-        Link with href
-    </a>
-</p>
-<div class="collapse" id="collapseExample">
-    <div class="card card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+@*<p>
+        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Link with href
+        </a>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+        </div>
     </div>
-</div>
-<br />
-<br />
+    <br />
+    <br />
 
-<button type="button" class="collapsible">Open Collapsible</button>
-<div class="content">
-    <p>Lorem ipsum...</p>
-</div>
+    <button type="button" class="collapsible">Open Collapsible</button>
+    <div class="content">
+        <p>Lorem ipsum...</p>
+    </div>*@
+
 
 
 @code {

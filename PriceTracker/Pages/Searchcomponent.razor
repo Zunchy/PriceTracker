@@ -1,0 +1,24 @@
+﻿@inject NavigationManager NavigationManager
+
+
+
+<input type="text" @onkeyup=Enter @bind-value="searchTerm" />
+<button class="btn btn-primary" @onclick="GoToProductsComponent">
+    Find Product
+</button>
+
+@code {
+    private string searchTerm;
+
+    private void GoToProductsComponent()
+    {
+        NavigationManager.NavigateTo($"productslist/{searchTerm}");
+        InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    private void Enter()
+    {
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+            GoToProductsComponent();
+    }
+}
