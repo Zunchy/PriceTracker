@@ -6,12 +6,38 @@ using System.Text;
 
 namespace PriceTracker.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
-        public DbSet<TrackedItem> TrackedItems { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Product> UserProducts { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(u => u.Products)
+                .WithMany(u => u.Users)
+                .UsingEntity<UserProduct>(
+                    j => j
+                        .HasOne(up => up.Product)
+                        .WithMany(p => p.UserProducts)
+                        .HasForeignKey(up => up.ProductId),
+                    j => j
+                        .HasOne(up => up.User)
+                        .WithMany(p => p.UserProducts)
+                        .HasForeignKey(up => up.UserId),
+                    j =>
+                    {
+                        j.HasKey(u => new { u.UserId, u.ProductId });
+                    });
+
+
+        }
     }
 }

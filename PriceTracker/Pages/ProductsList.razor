@@ -2,8 +2,8 @@
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject ApplicationDbContext Context
 @inject EbayService ProductService
+@inject TrackingService TrackingService
 
 <h1>Product Results for: @searchTerm</h1>
 
@@ -26,7 +26,7 @@
                 <td>@item.ItemName</td>
                 <td>$@item.ItemPrice</td>
                 <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Ebay</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
             </tr>
         }
 
@@ -38,7 +38,7 @@
                 <td>@item.ItemName</td>
                 <td>$@item.ItemPrice</td>
                 <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Mercari</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
             </tr>
         }
 
@@ -50,7 +50,7 @@
                 <td>@item.ItemName</td>
                 <td>$@item.ItemPrice</td>
                 <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on ebid</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
             </tr>
         }
 
@@ -62,7 +62,7 @@
                 <td>@item.ItemName</td>
                 <td>$@item.ItemPrice</td>
                 <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Poshmark</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
             </tr>
         }
 
@@ -74,7 +74,7 @@
                 <td>@item.ItemName</td>
                 <td>$@item.ItemPrice</td>
                 <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on eCrater</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item.ItemLink)">Track This Item</button></td>
+                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
             </tr>
         }
 
@@ -108,19 +108,14 @@
         
     }
 
-    public async Task InitiateTrack(String link)
+    public async Task InitiateTrack(DisplayItem item)
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var userPrinciple = authState.User;
 
-        if (user.Identity.IsAuthenticated)
+        if (userPrinciple.Identity.IsAuthenticated)
         {
-            Context.TrackedItems.Add(new TrackedItem
-            {
-                UserId = user.Identity.Name,
-                ItemIdentifier = link,
-            });
-            await Context.SaveChangesAsync();
+            await TrackingService.TrackItem(userPrinciple, item.ItemName, item.ItemLink);
         }
     }
 }
