@@ -7,13 +7,32 @@
     Find Product
 </button>
 
+<p>
+    Advanced Search Options <br />
+
+    <div class="row">
+        <input type="checkbox" id="ebayCheckBox" checked />
+        <label for="ebayCheckBox">Ebay</label>
+
+        <input type="checkbox" id="ebidCheckBox" checked />
+        <label for="ebidCheckBox">Ebid</label>
+
+        <input type="checkbox" id="mercariCheckBox" checked />
+        <label for="mercariCheckBox">Ebid</label>
+    </div>
+    <div class="row">
+        <input type="checkbox" id="poshmarkCheckBox" checked />
+        <label for="poshmarkCheckBox">Poshmark</label>
+    </div>
+</p>
+
 @code {
     private string searchTerm;
 
     private void GoToProductsComponent()
     {
-        NavigationManager.NavigateTo($"productslist/{searchTerm}");
-        InvokeAsync(() => { StateHasChanged(); });
+        NavigationManager.NavigateTo($"productslist/{searchTerm}", true); // true refreshes the page
+        //InvokeAsync(() => { StateHasChanged(); });
     }
 
     private void Enter()
