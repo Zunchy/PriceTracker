@@ -99,13 +99,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        displayItemsEbay = await ProductService.SearchProductAsync("Pokemon", 20);
-        /*
+        displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
+        
         Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
             () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
             () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
             () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
-        */
+        
     }
 
     public async Task InitiateTrack(DisplayItem item)
