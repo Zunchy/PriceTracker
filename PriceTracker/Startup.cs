@@ -35,14 +35,14 @@ namespace PriceTracker
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
-            services.AddTransient<UserManager<ApplicationUser>>();
             services.AddScoped<IProductAccessLayer, ProductAccessLayer>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddSingleton<EbayService>();
-            services.AddScoped<TrackingService>();
+            services.AddTransient<TrackingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
