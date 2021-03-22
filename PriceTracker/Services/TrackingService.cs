@@ -12,10 +12,10 @@ namespace PriceTracker.Data
     /// </summary>
     public class TrackingService
     {
-        private readonly IProductAccessLayer _product;
+        private readonly IProductsAccessLayer _product;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public TrackingService(IProductAccessLayer product, UserManager<ApplicationUser> userManager)
+        public TrackingService(IProductsAccessLayer product, UserManager<ApplicationUser> userManager)
         {
             _product = product;
             _userManager = userManager;
@@ -24,18 +24,19 @@ namespace PriceTracker.Data
         public async Task TrackItem(ClaimsPrincipal principle, string productName, string productIdentifier)
         {
             var user = await _userManager.GetUserAsync(principle);
-            var trackingProduct = _product.GetProductByIdentifier(productIdentifier);
+            var trackingProduct = _product.GetProductsByIdentifier(productIdentifier);
             if(trackingProduct == null)
             {
-                trackingProduct = new Product
+                trackingProduct = new Products
                 {
                     Name = productName,
                     ProductIdentifier = productIdentifier,
-                    Source = "Test"
+                    Source = "Test",
+                    Users = new List<ApplicationUser>()
                 };
                 trackingProduct.Users.Add(user);
 
-                await _product.AddProductAsync(trackingProduct);
+                await _product.AddProductsAsync(trackingProduct);
             }
             /*dbContext.TrackedItems.Add(new TrackedItem
             {

@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace PriceTracker.Data
 {
-    public interface IProductAccessLayer
+    public interface IProductsAccessLayer
     {
-        IEnumerable GetAllProducts();
-        Task AddProductAsync(Product product);
-        Task UpdateProductAsync(Product product);
-        Product GetProduct(int id);
-        Product GetProductByIdentifier(string productIdentifier);
-        Task DeleteProductAsync(int id);
+        IEnumerable GetAllProductss();
+        Task AddProductsAsync(Products Products);
+        Task UpdateProductsAsync(Products Products);
+        Products GetProducts(int id);
+        Products GetProductsByIdentifier(string ProductsIdentifier);
+        Task DeleteProductsAsync(int id);
     }
     
-    public class ProductAccessLayer : IProductAccessLayer
+    public class ProductsAccessLayer : IProductsAccessLayer
     {
         private ApplicationDbContext _context;
-        public ProductAccessLayer(ApplicationDbContext context)
+        public ProductsAccessLayer(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable GetAllProducts()
+        public IEnumerable GetAllProductss()
         {
             try
             {
@@ -37,11 +37,11 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task AddProductAsync(Product product)
+        public async Task AddProductsAsync(Products Products)
         {
             try
             {
-                await _context.Products.AddAsync(product);
+                await _context.Products.AddAsync(Products);
                 await _context.SaveChangesAsync();
             }
             catch
@@ -50,11 +50,11 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task UpdateProductAsync(Product product)
+        public async Task UpdateProductsAsync(Products Products)
         {
             try
             {
-                _context.Entry(product).State = EntityState.Modified;
+                _context.Entry(Products).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch
@@ -63,12 +63,12 @@ namespace PriceTracker.Data
             }
         }
 
-        public Product GetProduct(int id)
+        public Products GetProducts(int id)
         {
             try
             {
-                Product product = _context.Products.Find(id);
-                return product;
+                Products Products = _context.Products.Find(id);
+                return Products;
             }
             catch
             {
@@ -76,27 +76,27 @@ namespace PriceTracker.Data
             }
         }
 
-        public Product GetProductByIdentifier(string productIdentifier)
+        public Products GetProductsByIdentifier(string ProductsIdentifier)
         {
             try
             {
-                Product product = _context.Products
-                                          .Where(p => p.ProductIdentifier == productIdentifier)
+                Products Products = _context.Products
+                                          .Where(p => p.ProductIdentifier == ProductsIdentifier)
                                           .FirstOrDefault();
-                return product;
+                return Products;
             }
-            catch
+            catch(Exception e)
             {
                 throw;
             }
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task DeleteProductsAsync(int id)
         {
             try
             {
-                Product product = _context.Products.Find(id);
-                _context.Products.Remove(product);
+                Products Products = _context.Products.Find(id);
+                _context.Products.Remove(Products);
                 await _context.SaveChangesAsync();
             }
             catch

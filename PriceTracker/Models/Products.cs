@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PriceTracker.Data
 {
-    public class Product
+    public class Products
     {
         [Key]
         public int ProductId { get; set; }

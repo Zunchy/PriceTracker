@@ -11,6 +11,6 @@ namespace PriceTracker.Data
         public ApplicationUser User { get; set; }
 
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public Products Product { get; set; }
     }
 }

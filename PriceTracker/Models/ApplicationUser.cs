@@ -8,7 +8,7 @@ namespace PriceTracker.Data
 {
     public class ApplicationUser : IdentityUser
     {
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Products> Products { get; set; }
         public List<UserProduct> UserProducts { get; set; }
     }
 }

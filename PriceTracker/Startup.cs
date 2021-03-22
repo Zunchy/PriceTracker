@@ -39,7 +39,7 @@ namespace PriceTracker
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
-            services.AddScoped<IProductAccessLayer, ProductAccessLayer>();
+            services.AddScoped<IProductsAccessLayer, ProductsAccessLayer>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddSingleton<EbayService>();
             services.AddTransient<TrackingService>();
