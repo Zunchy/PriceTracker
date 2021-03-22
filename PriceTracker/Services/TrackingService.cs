@@ -27,7 +27,7 @@ namespace PriceTracker.Data
             var trackingProduct = _product.GetProductsByIdentifier(productIdentifier);
             if(trackingProduct == null)
             {
-                trackingProduct = new Products
+                trackingProduct = new Product
                 {
                     Name = productName,
                     ProductIdentifier = productIdentifier,

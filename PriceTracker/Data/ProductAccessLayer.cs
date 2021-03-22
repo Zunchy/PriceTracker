@@ -9,11 +9,11 @@ namespace PriceTracker.Data
 {
     public interface IProductsAccessLayer
     {
-        IEnumerable GetAllProductss();
-        Task AddProductsAsync(Products Products);
-        Task UpdateProductsAsync(Products Products);
-        Products GetProducts(int id);
-        Products GetProductsByIdentifier(string ProductsIdentifier);
+        IEnumerable GetAllProducts();
+        Task AddProductsAsync(Product Products);
+        Task UpdateProductsAsync(Product Products);
+        Product GetProducts(int id);
+        Product GetProductsByIdentifier(string ProductsIdentifier);
         Task DeleteProductsAsync(int id);
     }
     
@@ -25,7 +25,7 @@ namespace PriceTracker.Data
             _context = context;
         }
 
-        public IEnumerable GetAllProductss()
+        public IEnumerable GetAllProducts()
         {
             try
             {
@@ -37,7 +37,7 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task AddProductsAsync(Products Products)
+        public async Task AddProductsAsync(Product Products)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task UpdateProductsAsync(Products Products)
+        public async Task UpdateProductsAsync(Product Products)
         {
             try
             {
@@ -63,11 +63,11 @@ namespace PriceTracker.Data
             }
         }
 
-        public Products GetProducts(int id)
+        public Product GetProducts(int id)
         {
             try
             {
-                Products Products = _context.Products.Find(id);
+                Product Products = _context.Products.Find(id);
                 return Products;
             }
             catch
@@ -76,11 +76,11 @@ namespace PriceTracker.Data
             }
         }
 
-        public Products GetProductsByIdentifier(string ProductsIdentifier)
+        public Product GetProductsByIdentifier(string ProductsIdentifier)
         {
             try
             {
-                Products Products = _context.Products
+                Product Products = _context.Products
                                           .Where(p => p.ProductIdentifier == ProductsIdentifier)
                                           .FirstOrDefault();
                 return Products;
@@ -95,7 +95,7 @@ namespace PriceTracker.Data
         {
             try
             {
-                Products Products = _context.Products.Find(id);
+                Product Products = _context.Products.Find(id);
                 _context.Products.Remove(Products);
                 await _context.SaveChangesAsync();
             }
