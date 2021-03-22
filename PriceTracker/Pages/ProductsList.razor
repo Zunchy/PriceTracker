@@ -39,10 +39,10 @@
         if (displayAllItems.Count > 0)
             displayAllItems.Clear();
 
-        Parallel.Invoke(() => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
-                    //() => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
-                    () => displayItemsPoshmark  = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
-                    () => displayItemsEcrater   = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+        Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
+        //() => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
+        () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
+        () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
         displayAllItems.AddRange(displayItemsMercari);
         //displayAllItems.AddRange(displayItemsEbid);
         displayAllItems.AddRange(displayItemsPoshmark);

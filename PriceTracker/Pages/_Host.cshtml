@@ -19,7 +19,7 @@
     <link href="PriceTracker.styles.css" rel="stylesheet" />
 </head>
 <body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    <component type="typeof(App)" render-mode="Server" /> @*ServerPrerendered -> server to stop double load (search)*@
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">

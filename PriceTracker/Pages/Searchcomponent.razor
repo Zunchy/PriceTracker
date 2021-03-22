@@ -11,19 +11,34 @@
     Advanced Search Options <br />
 
     <div class="row">
-        <input type="checkbox" id="ebayCheckBox" checked />
-        <label for="ebayCheckBox">Ebay</label>
+        <input type="checkbox" id="ebayCheckBox" @bind-value="ebayCheck" checked />
+        <label for="ebayCheckBox">Ebay</label>&nbsp;
 
-        <input type="checkbox" id="ebidCheckBox" checked />
-        <label for="ebidCheckBox">Ebid</label>
+        <input type="checkbox" id="ebidCheckBox" @bind-value="ebidCheck" checked />
+        <label for="ebidCheckBox">Ebid</label>&nbsp;
 
-        <input type="checkbox" id="mercariCheckBox" checked />
-        <label for="mercariCheckBox">Ebid</label>
+        <input type="checkbox" id="ecraterCheckBox" @bind-value="ecraterCheck" checked />
+        <label for="ecraterCheckBox">eCrater</label>&nbsp;
     </div>
     <div class="row">
-        <input type="checkbox" id="poshmarkCheckBox" checked />
-        <label for="poshmarkCheckBox">Poshmark</label>
+        <input type="checkbox" id="mercariCheckBox" @bind-value="mercariCheck" checked />
+        <label for="mercariCheckBox">Mercari</label>&nbsp;
+
+        <input type="checkbox" id="poshmarkCheckBox" @bind-value="poshmarkCheck" checked />
+        <label for="poshmarkCheckBox">Poshmark</label>&nbsp;
     </div>
+
+    <br />
+    Ebay: @ebayCheck
+
+    <br />
+    eBid: @ebidCheck
+
+    <br />
+    Mercari: @mercariCheck
+
+    <br />
+    Poshmark: @poshmarkCheck
 </p>
 
 @code {
@@ -40,4 +55,10 @@
         if (!string.IsNullOrWhiteSpace(searchTerm))
             GoToProductsComponent();
     }
+
+    private bool ebayCheck = true;
+    private bool ebidCheck = true;
+    private bool ecraterCheck = true;
+    private bool mercariCheck = true;
+    private bool poshmarkCheck = true;
 }

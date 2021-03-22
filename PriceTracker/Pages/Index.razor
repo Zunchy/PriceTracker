@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject NavigationManager NavigationManager
+@*@inject NavigationManager NavigationManager*@
 
 
 <div class="stylepage">
@@ -13,17 +13,5 @@
 
 
 @code {
-    //https://docs.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-3.1#uri-and-navigation-state-helpers
-    private string searchTerm;
-
-    private void GoToProductsComponent()
-    {
-        NavigationManager.NavigateTo($"productslist/{searchTerm}");
-    }
-
-    private void Enter()
-    {
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-            GoToProductsComponent();
-    }
+    
 }
