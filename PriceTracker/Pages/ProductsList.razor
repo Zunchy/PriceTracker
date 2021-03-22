@@ -3,17 +3,20 @@
 <h1>Product Results for: @searchTerm</h1>
 
 <p>
-<Searchcomponent></Searchcomponent>
+    <Searchcomponent></Searchcomponent>
 </p>
 
+@*TODO fix persistent loading*@
+<div class="spinner"></div>
 
+@* Displays all of the products in card form *@
 <div class="row">
     @foreach (DisplayItem item in displayAllItems)
     {
-        <ProductCardComponent prodImgSrc="@item.ItemImage" 
-                              prodName  ="@item.ItemName"
-                              prodPrice ="@item.ItemPrice.ToString()"
-                              prodLink  ="@item.ItemLink"></ProductCardComponent>
+        <ProductCardComponent prodImgSrc = "@item.ItemImage"
+                              prodName   = "@item.ItemName"
+                              prodPrice  = "@item.ItemPrice.ToString()"
+                              prodLink   = "@item.ItemLink"></ProductCardComponent>
     }
 </div>
 
@@ -27,27 +30,33 @@
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 
-    List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
+    List<DisplayItem> displayItemsMercari   = new List<DisplayItem>();
     //List<DisplayItem> displayItemsEbid      = new List<DisplayItem>();
-    List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
-    List<DisplayItem> displayItemsEcrater = new List<DisplayItem>();
-    List<DisplayItem> displayAllItems = new List<DisplayItem>();
+    List<DisplayItem> displayItemsPoshmark  = new List<DisplayItem>();
+    List<DisplayItem> displayItemsEcrater   = new List<DisplayItem>();
+    List<DisplayItem> displayAllItems       = new List<DisplayItem>();
 
 
     protected override async Task OnInitializedAsync()
     {
-        if (displayAllItems.Count > 0)
-            displayAllItems.Clear();
+        await Task.Run(ScrapeWebsites);
 
-        Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
-        //() => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
-        () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
-        () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+    }
+
+    private void ScrapeWebsites()
+    {
+        // Scrape the websites and Format the data
+        Parallel.Invoke(
+            () => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
+            //() => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
+            () => displayItemsPoshmark  = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
+            () => displayItemsEcrater   = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+
+        // Add all lists into one list
         displayAllItems.AddRange(displayItemsMercari);
         //displayAllItems.AddRange(displayItemsEbid);
         displayAllItems.AddRange(displayItemsPoshmark);
         displayAllItems.AddRange(displayItemsEcrater);
-
     }
 
     public void InitiateTrack(String link)
