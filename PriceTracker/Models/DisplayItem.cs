@@ -7,7 +7,6 @@ namespace PriceTracker.Data
 {
     public class DisplayItem
     {
-
         public string ItemName { get; set; }
         public double ItemPrice { get; set; }
         public string ItemLink { get; set; }
