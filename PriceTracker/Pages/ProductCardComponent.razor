@@ -1,4 +1,6 @@
-﻿
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject TrackingService TrackingService
+
 @if (prodName == null || prodPrice == null)
 {
     <h2>Loading...</h2>
@@ -24,7 +26,7 @@ else
                     </div>
                     <div class="col-4"></div>
                     <div class="col-4">
-                        <a href="#" class="btn btn-primary btn-lg">Track</a>
+                        <a @onclick="(e => InitiateTrack(prodName, prodLink))" class="btn btn-primary btn-lg">Track</a>
                     </div><br />
                 </div>
                 <br />
@@ -32,4 +34,19 @@ else
             </div>
         </div>
     </div>
+}
+
+@code {
+
+    public async Task InitiateTrack(String itemName, String itemLink)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userPrinciple = authState.User;
+
+        if (userPrinciple.Identity.IsAuthenticated)
+        {
+            await TrackingService.TrackItem(userPrinciple, itemName, itemLink);
+        }
+    }
+
 }
