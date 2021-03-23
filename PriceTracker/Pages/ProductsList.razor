@@ -27,6 +27,22 @@
     [Parameter]
     public String searchTerm { get; set; }
 
+
+    [Parameter]
+    public bool ebayCheck { get; set; } = true;
+
+    [Parameter]
+    public bool ebidCheck { get; set; } = true;
+
+    [Parameter]
+    public bool ecraterCheck { get; set; } = true;
+
+    [Parameter]
+    public bool mercariCheck { get; set; } = true;
+
+    [Parameter]
+    public bool poshmarkCheck { get; set; } = true;
+
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 

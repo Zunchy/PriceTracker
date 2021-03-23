@@ -4,6 +4,16 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+p {
+    color: white;
+}
+
+body {
+    height: 100%;
+    background: rgb(63,9,121);
+    background: linear-gradient(0deg, rgba(63,9,121,1) 27%, rgba(67,25,203,1) 90%);
+}
+
 a, .btn-link {
     color: #0366d6;
 }

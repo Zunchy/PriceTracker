@@ -2,15 +2,15 @@
 
 
 
-<input type="text" @onkeyup=Enter @bind-value="searchTerm" />
+@*<input type="text" @onkeyup=Enter @bind-value="searchTerm" />
 <button class="btn btn-primary" @onclick="GoToProductsComponent">
     Find Product
-</button>
+</button>*@
 
 <p>
-    Advanced Search Options <br />
+    @*Advanced Search Options <br />*@
 
-    <div class="row">
+    @*<div class="row">
         <input type="checkbox" id="ebayCheckBox" @bind-value="ebayCheck" checked />
         <label for="ebayCheckBox">Ebay</label>&nbsp;
 
@@ -26,9 +26,42 @@
 
         <input type="checkbox" id="poshmarkCheckBox" @bind-value="poshmarkCheck" checked />
         <label for="poshmarkCheckBox">Poshmark</label>&nbsp;
-    </div>
+    </div>*@
 
-    <br />
+<div class="container">
+    <input type="text" @onkeyup=Enter @bind-value="searchTerm" />
+    <button class="btn btn-primary" @onclick="GoToProductsComponent">
+        Find Product
+    </button>
+    <ul class="ks-cboxtags">
+        <li>
+            <input type="checkbox" id="ebayCheckBox" @bind-value="ebayCheck" checked />
+            <label for="ebayCheckBox">Ebay</label>
+        </li>
+
+        <li>
+            <input type="checkbox" id="ebidCheckBox" @bind-value="ebidCheck" checked />
+            <label for="ebidCheckBox">Ebid</label>
+        </li>
+
+        <li>
+            <input type="checkbox" id="ecraterCheckBox" @bind-value="ecraterCheck" checked />
+            <label for="ecraterCheckBox">eCrater</label>
+        </li>
+
+        <li>
+            <input type="checkbox" id="mercariCheckBox" @bind-value="mercariCheck" checked />
+            <label for="mercariCheckBox">Mercari</label>
+        </li>
+
+        <li>
+            <input type="checkbox" id="poshmarkCheckBox" @bind-value="poshmarkCheck" checked />
+            <label for="poshmarkCheckBox">Poshmark</label>
+        </li>
+    </ul>
+</div>
+
+    @*<br />
     Ebay: @ebayCheck
 
     <br />
@@ -38,7 +71,7 @@
     Mercari: @mercariCheck
 
     <br />
-    Poshmark: @poshmarkCheck
+    Poshmark: @poshmarkCheck*@
 </p>
 
 @code {
@@ -46,8 +79,9 @@
 
     private void GoToProductsComponent()
     {
+        GetSelected();
         NavigationManager.NavigateTo($"productslist/{searchTerm}", true); // true refreshes the page
-        //InvokeAsync(() => { StateHasChanged(); });
+                                                                          //InvokeAsync(() => { StateHasChanged(); });
     }
 
     private void Enter()
@@ -61,4 +95,14 @@
     private bool ecraterCheck = true;
     private bool mercariCheck = true;
     private bool poshmarkCheck = true;
+
+    List<bool> isSelected { get; set; } = new List<bool> { };
+    private void GetSelected()
+    {
+        isSelected.Add(ebayCheck);
+        isSelected.Add(ebidCheck);
+        isSelected.Add(ecraterCheck);
+        isSelected.Add(mercariCheck);
+        isSelected.Add(poshmarkCheck);
+    }
 }
