@@ -38,20 +38,24 @@ namespace PriceTracker.Data
             String result = "";
             foreach (IWebElement item in searchSpace)
             {
-                IWebElement itemContent = item.FindElement(By.XPath("./.."));
-                String link = itemContent.GetAttribute("href");
-                String image = "";
+                try
+                {
+                    IWebElement itemContent = item.FindElement(By.XPath("./.."));
+                    String link = itemContent.GetAttribute("href");
+                    String image = "";
 
-                result += itemContent.Text;
-                result += "\r\n";
-                result += link;
-                result += "\r\n";
+                    result += itemContent.Text;
+                    result += "\r\n";
+                    result += link;
+                    result += "\r\n";
 
-                String imagePath = link.Split("/")[5];
-                image = $"https://mercari-images.global.ssl.fastly.net/photos/{imagePath}_1.jpg?1615326085&w=200&h=200&fitcrop&sharpen";
+                    String imagePath = link.Split("/")[5];
+                    image = $"https://mercari-images.global.ssl.fastly.net/photos/{imagePath}_1.jpg?1615326085&w=200&h=200&fitcrop&sharpen";
 
-                result += image;
-                result += "END ITEM";
+                    result += image;
+                    result += "END ITEM";
+                }
+                catch { }
 
             }
 
@@ -89,21 +93,23 @@ namespace PriceTracker.Data
             String result = "";
             foreach (IWebElement item in searchSpace)
             {
+                try
+                {
+                    String name = item.FindElement(By.TagName("h2")).Text;
+                    String price = item.FindElement(By.ClassName("dkgrey")).Text;
+                    String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+                    String image = item.FindElement(By.TagName("img")).GetAttribute("src");
 
-                String name = item.FindElement(By.TagName("h2")).Text;
-                String price = item.FindElement(By.ClassName("dkgrey")).Text;
-                String link = item.FindElement(By.TagName("a")).GetAttribute("href");
-                String image = item.FindElement(By.TagName("img")).GetAttribute("src");
-
-                result += name;
-                result += "\r\n";
-                result += price;
-                result += "\r\n";
-                result += link;
-                result += "\r\n";
-                result += image;
-                result += "END ITEM";
-
+                    result += name;
+                    result += "\r\n";
+                    result += price;
+                    result += "\r\n";
+                    result += link;
+                    result += "\r\n";
+                    result += image;
+                    result += "END ITEM";
+                }
+                catch { }
             }
 
             eBidDriver.Quit();
@@ -142,17 +148,19 @@ namespace PriceTracker.Data
             String result = "";
             foreach (IWebElement item in searchSpace)
             {
+                try
+                {
+                    String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+                    String image = item.FindElement(By.TagName("img")).GetAttribute("src");
 
-                String link = item.FindElement(By.TagName("a")).GetAttribute("href");
-                String image = item.FindElement(By.TagName("img")).GetAttribute("src");
-
-                result += item.Text;
-                result += "\r\n";
-                result += link;
-                result += "\r\n";
-                result += image;
-                result += "END ITEM";
-
+                    result += item.Text;
+                    result += "\r\n";
+                    result += link;
+                    result += "\r\n";
+                    result += image;
+                    result += "END ITEM";
+                }
+                catch { }
             }
 
             poshmarkDriver.Quit();
@@ -190,17 +198,19 @@ namespace PriceTracker.Data
             String result = "";
             foreach (IWebElement item in searchSpace)
             {
+                try
+                {
+                    String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+                    String image = item.FindElement(By.TagName("img")).GetAttribute("src");
 
-                String link = item.FindElement(By.TagName("a")).GetAttribute("href");
-                String image = item.FindElement(By.TagName("img")).GetAttribute("src");
-
-                result += item.Text;
-                result += "\r\n";
-                result += link;
-                result += "\r\n";
-                result += image;
-                result += "END ITEM";
-
+                    result += item.Text;
+                    result += "\r\n";
+                    result += link;
+                    result += "\r\n";
+                    result += image;
+                    result += "END ITEM";
+                }
+                catch { }
             }
 
             eCraterDriver.Quit();
