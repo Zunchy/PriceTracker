@@ -7,79 +7,23 @@
 
 <h1>Product Results for: @searchTerm</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Item Source</th>
-            <th>Product Image</th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Product Link</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (DisplayItem item in displayItemsEbay)
-        {
-            <tr>
-                <td>Ebay</td>
-                <td><img src="@item.ItemImage"></td>
-                <td>@item.ItemName</td>
-                <td>$@item.ItemPrice</td>
-                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Ebay</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
-            </tr>
-        }
+<p>
+    <Searchcomponent></Searchcomponent>
+</p>
 
-        @foreach (DisplayItem item in displayItemsMercari)
-        {
-            <tr>
-                <td>Mercari</td>
-                <td><img src="@item.ItemImage"></td>
-                <td>@item.ItemName</td>
-                <td>$@item.ItemPrice</td>
-                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Mercari</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
-            </tr>
-        }
+@*TODO fix persistent loading*@
+<div class="spinner"></div>
 
-        @foreach (DisplayItem item in displayItemsEbid)
-        {
-            <tr>
-                <td>eBid</td>
-                <td><img src="@item.ItemImage"></td>
-                <td>@item.ItemName</td>
-                <td>$@item.ItemPrice</td>
-                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on ebid</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
-            </tr>
-        }
-
-        @foreach (DisplayItem item in displayItemsPoshmark)
-        {
-            <tr>
-                <td>Poshmark</td>
-                <td><img src="@item.ItemImage"></td>
-                <td>@item.ItemName</td>
-                <td>$@item.ItemPrice</td>
-                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on Poshmark</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
-            </tr>
-        }
-
-        @foreach (DisplayItem item in displayItemsEcrater)
-        {
-            <tr>
-                <td>eCrater</td>
-                <td><img src="@item.ItemImage"></td>
-                <td>@item.ItemName</td>
-                <td>$@item.ItemPrice</td>
-                <td><a target="_blank" rel="noopener noreferrer" href="@item.ItemLink">View this Item on eCrater</a></td>
-                <td><button class="btn btn-primary" data-button="@item.ItemLink" @onclick="() => InitiateTrack(item)">Track This Item</button></td>
-            </tr>
-        }
-
-    </tbody>
-</table>
+@* Displays all of the products in card form *@
+<div class="row">
+    @foreach (DisplayItem item in displayAllItems)
+    {
+        <ProductCardComponent prodImgSrc = "@item.ItemImage"
+                              prodName   = "@item.ItemName"
+                              prodPrice  = "@item.ItemPrice.ToString()"
+                              prodLink   = "@item.ItemLink"></ProductCardComponent>
+    }
+</div>
 
 
 @code {
@@ -87,25 +31,54 @@
     [Parameter]
     public String searchTerm { get; set; }
 
+
+    [Parameter]
+    public bool ebayCheck { get; set; } = true;
+
+    [Parameter]
+    public bool ebidCheck { get; set; } = true;
+
+    [Parameter]
+    public bool ecraterCheck { get; set; } = true;
+
+    [Parameter]
+    public bool mercariCheck { get; set; } = true;
+
+    [Parameter]
+    public bool poshmarkCheck { get; set; } = true;
+
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 
     List<DisplayItem> displayItemsEbay = new List<DisplayItem>();
-    List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
-    List<DisplayItem> displayItemsEbid = new List<DisplayItem>();
-    List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
-    List<DisplayItem> displayItemsEcrater = new List<DisplayItem>();
+    List<DisplayItem> displayItemsMercari   = new List<DisplayItem>();
+    //List<DisplayItem> displayItemsEbid      = new List<DisplayItem>();
+    List<DisplayItem> displayItemsPoshmark  = new List<DisplayItem>();
+    List<DisplayItem> displayItemsEcrater   = new List<DisplayItem>();
+    List<DisplayItem> displayAllItems       = new List<DisplayItem>();
 
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.Run(ScrapeWebsites);
+    }
+
+    private void ScrapeWebsites()
+    {
         displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
-        
-        Parallel.Invoke(() => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
-            () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
-            () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
-            () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
-        
+      
+        // Scrape the websites and Format the data
+        Parallel.Invoke(
+            () => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
+            //() => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
+            () => displayItemsPoshmark  = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
+            () => displayItemsEcrater   = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+
+        // Add all lists into one list
+        displayAllItems.AddRange(displayItemsMercari);
+        //displayAllItems.AddRange(displayItemsEbid);
+        displayAllItems.AddRange(displayItemsPoshmark);
+        displayAllItems.AddRange(displayItemsEcrater);
     }
 
     public async Task InitiateTrack(DisplayItem item)
