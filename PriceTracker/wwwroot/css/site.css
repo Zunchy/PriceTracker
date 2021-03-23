@@ -4,6 +4,16 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+p {
+    color: white;
+}
+
+body {
+    height: 100%;
+    background: rgb(63,9,121);
+    background: linear-gradient(0deg, rgba(63,9,121,1) 27%, rgba(67,25,203,1) 90%);
+}
+
 a, .btn-link {
     color: #0366d6;
 }
@@ -48,3 +58,25 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.spinner {
+    border: 16px solid silver;
+    border-top:  16px solid #337AB7;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 700ms linear infinite;
+    top: 40%;
+    left: 55%;
+    position: absolute;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
