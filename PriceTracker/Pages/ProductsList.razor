@@ -1,4 +1,9 @@
 ﻿@page "/productslist/{searchTerm}"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject EbayService ProductService
+@inject TrackingService TrackingService
 
 <h1>Product Results for: @searchTerm</h1>
 
@@ -19,7 +24,6 @@
                               prodLink   = "@item.ItemLink"></ProductCardComponent>
     }
 </div>
-
 
 
 @code {
@@ -46,6 +50,7 @@
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 
+    List<DisplayItem> displayItemsEbay = new List<DisplayItem>();
     List<DisplayItem> displayItemsMercari   = new List<DisplayItem>();
     //List<DisplayItem> displayItemsEbid      = new List<DisplayItem>();
     List<DisplayItem> displayItemsPoshmark  = new List<DisplayItem>();
@@ -56,11 +61,12 @@
     protected override async Task OnInitializedAsync()
     {
         await Task.Run(ScrapeWebsites);
-
     }
 
     private void ScrapeWebsites()
     {
+        displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
+      
         // Scrape the websites and Format the data
         Parallel.Invoke(
             () => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
@@ -75,8 +81,14 @@
         displayAllItems.AddRange(displayItemsEcrater);
     }
 
-    public void InitiateTrack(String link)
+    public async Task InitiateTrack(DisplayItem item)
     {
-        // Process of tracking an item
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userPrinciple = authState.User;
+
+        if (userPrinciple.Identity.IsAuthenticated)
+        {
+            await TrackingService.TrackItem(userPrinciple, item.ItemName, item.ItemLink);
+        }
     }
 }

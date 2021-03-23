@@ -9,17 +9,21 @@ using System.Threading.Tasks;
 
 namespace PriceTracker.Data
 {
+    /// <summary>
+    /// Logic for retrieval of data from ebay's api
+    /// </summary>
    
-    public class EbayProductService
+    public class EbayService
     {
         static HttpClient client;
         public IServiceProvider serviceProvider;
         private string currentToken;
 
-        public EbayProductService(IServiceProvider services)
+        public EbayService(IServiceProvider services)
         {
             client = new HttpClient();
             serviceProvider = services;
+            currentToken = "NoToken";
         }
 
         //Get a new Client Token
@@ -35,7 +39,7 @@ namespace PriceTracker.Data
             HttpContent payload = new StringContent(LoginInfo, Encoding.UTF8, "application/x-www-form-urlencoded");
 
             //Client-Id:Client-Secret Must be encoded Base64
-            var plainTextBytesCredentials = System.Text.Encoding.UTF8.GetBytes("Enter Here");
+            var plainTextBytesCredentials = System.Text.Encoding.UTF8.GetBytes("ZacharyW-Capstone-PRD-ddc6cc39b-adca02d8:PRD-dc6cc39b27ee-a3fc-4917-b64f-2d8f");
             var b64Credentials = System.Convert.ToBase64String(plainTextBytesCredentials);
             client.DefaultRequestHeaders.Add("Authorization", "Basic " + b64Credentials);
 
