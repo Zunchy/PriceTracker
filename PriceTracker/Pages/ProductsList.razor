@@ -60,13 +60,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
         await Task.Run(ScrapeWebsites);
     }
 
     private void ScrapeWebsites()
     {
-        displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
-      
+
         // Scrape the websites and Format the data
         Parallel.Invoke(
             () => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
@@ -75,6 +75,7 @@
             () => displayItemsEcrater   = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
 
         // Add all lists into one list
+        displayAllItems.AddRange(displayItemsEbay);
         displayAllItems.AddRange(displayItemsMercari);
         //displayAllItems.AddRange(displayItemsEbid);
         displayAllItems.AddRange(displayItemsPoshmark);
