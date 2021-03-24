@@ -67,6 +67,8 @@ namespace PriceTracker.Data
 
         public double ScrapePriceByMercariItem(string itemLink)
         {
+            mercariDriver = new ChromeDriver(options);
+
             double newPrice = 0.0;
 
             mercariDriver.Navigate().GoToUrl(itemLink);
@@ -186,7 +188,6 @@ namespace PriceTracker.Data
 
         public String ScrapeEcrater(string searchTerm)
         {
-
             eCraterDriver = new ChromeDriver(options);
 
             // Search For Products
