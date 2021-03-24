@@ -9,6 +9,7 @@ namespace PriceTracker.Data
     public interface IUserProductAccessLayer
     {
         IEnumerable GetAllUserProducts();
+        IEnumerable GetUserProductsByUserId(string userId);
     }
 
     public class UserProductAccessLayer : IUserProductAccessLayer
@@ -24,6 +25,18 @@ namespace PriceTracker.Data
             try
             {
                 return _context.UserProduct.ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable GetUserProductsByUserId(string userId)
+        {
+            try
+            {
+                return _context.UserProduct.Where(p => p.UserId == userId).ToList();
             }
             catch
             {
