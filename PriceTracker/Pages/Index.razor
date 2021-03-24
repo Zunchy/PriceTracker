@@ -1,16 +1,35 @@
 ﻿@page "/"
 @*@inject NavigationManager NavigationManager*@
+@inject TrackingService TrackingService
 
 
 <div class="container">
-@*<div>*@
+    @*<div>*@
     <h1>Search for a product</h1>
     <Searchcomponent></Searchcomponent>
 </div>
 
-
+<button @onclick="(e => TestTracker())">Test</button>
 
 
 @code {
-    
+
+    private void TestTracker()
+    {
+        List<UserProduct> userProductList = TrackingService.GetUserProducts();
+
+        foreach(UserProduct userProduct in userProductList)
+        {
+            TrackingService.GetProductsByUser(userProduct.UserId);
+            // for each product in userProducts
+                // pass product into TrackingService.CheckProductPrice
+                // if price changed
+                    // add price change to notification message
+            // if notification message is not blank
+                // Get user email and phone number
+                // Send the Notification
+        }
+
+    }
+
 }
