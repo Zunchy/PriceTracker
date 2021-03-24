@@ -59,8 +59,22 @@ namespace PriceTracker.Data
             }
         }
 
+        //Get Individual Product Info from ebay
+        public async Task<DisplayItem> GetProductAsync(string epid)
+        {
+            //Clear Headers
+            client.DefaultRequestHeaders.Clear();
+
+            //Set Authorization header to contain the current token
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + currentToken);
+
+            string content = null;
+            HttpResponseMessage response = await client.GetAsync($"https://api.ebay.com/commerce/catalog/v1/product/{epid}");
+            return null;
+        }
+
         //Search Ebay Api 
-        public  async Task<List<DisplayItem>> SearchProductAsync(string query, int numResults)
+        public async Task<List<DisplayItem>> SearchProductAsync(string query, int numResults)
         {
             //Clear Headers
             client.DefaultRequestHeaders.Clear();
@@ -88,6 +102,7 @@ namespace PriceTracker.Data
                     item.ItemLink = product.itemWebUrl;
                     item.ItemImage = product.image.imageUrl;
                     item.ItemSource = "Ebay";
+                    item.ItemEpid = product.itemId;
                     displayItems.Add(item);
                 }
 
