@@ -59,19 +59,24 @@ namespace PriceTracker.Data
             //await dbContext.SaveChangesAsync();
         }
 
-        public List<UserProduct> GetUserProducts()
+        public IQueryable<ApplicationUser> GetAllUsers()
+        {
+            return _userManager.Users;
+        }
+
+        public List<UserProduct> GetAllUserProducts()
         {
            return (List<UserProduct>)_userProduct.GetAllUserProducts();
         }
 
-        public void GetProductsByUser(string userId)
+        public List<UserProduct> GetUserProductsByUserId(string userId)
         {
-            // Get all products associated with user id
+            return (List<UserProduct>)_userProduct.GetUserProductsByUserId(userId);
         }
 
-        public void CheckProductPrice(string productId)
+        public Product GetProductById(int productId)
         {
-            // Pass in product, Consult Scraper for price check, return price
+            return _product.GetProducts(productId);
         }
     }
 }
