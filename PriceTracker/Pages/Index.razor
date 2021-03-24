@@ -16,7 +16,7 @@
 
     private void TestTracker()
     {
-
+        Scraper scraper = new Scraper();
         IQueryable<ApplicationUser> users = TrackingService.GetAllUsers();
 
         foreach (ApplicationUser user in users)
@@ -26,6 +26,24 @@
             foreach (UserProduct product in userProductList)
             {
                 Product currentProduct = TrackingService.GetProductById(product.ProductId);
+
+                switch (currentProduct.Source)
+                {
+                    case "Ebay":
+                        break;
+                    case "Mercari":
+                        scraper.ScrapePriceByMercariItem(currentProduct.ProductIdentifier);
+                        break;
+                    case "eBid":
+                        scraper.ScrapePriceByEbidItem(currentProduct.ProductIdentifier);
+                        break;
+                    case "Poshmark":
+                        scraper.ScrapePriceByPoshmarkItem(currentProduct.ProductIdentifier);
+                        break;
+                    case "eCrater":
+                        scraper.ScrapePriceByEcraterItem(currentProduct.ProductIdentifier);
+                        break;
+                }
             }
         }
 
