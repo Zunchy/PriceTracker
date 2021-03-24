@@ -40,6 +40,10 @@ namespace PriceTracker.Data
 
                 await _product.AddProductsAsync(trackingProduct);
             }
+            else
+            {
+                trackingProduct.Users.Add(user);
+            }
             /*dbContext.TrackedItems.Add(new TrackedItem
             {
                 UserId = userManager.GetUserId(principle),
