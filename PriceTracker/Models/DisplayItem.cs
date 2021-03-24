@@ -11,6 +11,7 @@ namespace PriceTracker.Data
         public double ItemPrice { get; set; }
         public string ItemLink { get; set; }
         public string ItemImage { get; set; }
+        public string ItemSource { get; set; }
 
     }
 }
