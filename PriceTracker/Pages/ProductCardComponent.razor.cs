@@ -18,5 +18,7 @@ namespace PriceTracker.Pages
 
         [Parameter] public string prodLink { get; set; }
 
+        [Parameter] public string prodSource { get; set; }
+
     }
 }

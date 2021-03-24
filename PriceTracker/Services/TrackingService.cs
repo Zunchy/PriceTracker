@@ -23,7 +23,7 @@ namespace PriceTracker.Data
             _userManager = userManager;
         }
 
-        public async Task TrackItem(ClaimsPrincipal principle, string productName, string productIdentifier)
+        public async Task TrackItem(ClaimsPrincipal principle, string productName, string productIdentifier, string productSource)
         {
             var user = await _userManager.GetUserAsync(principle);
             var trackingProduct = _product.GetProductsByIdentifier(productIdentifier);
@@ -33,7 +33,7 @@ namespace PriceTracker.Data
                 {
                     Name = productName,
                     ProductIdentifier = productIdentifier,
-                    Source = "Test",
+                    Source = productSource,
                     Users = new List<ApplicationUser>()
                 };
                 trackingProduct.Users.Add(user);
