@@ -87,6 +87,7 @@ namespace PriceTracker.Data
                     item.ItemPrice = Convert.ToDouble(product.price.value);
                     item.ItemLink = product.itemWebUrl;
                     item.ItemImage = product.image.imageUrl;
+                    item.ItemSource = "Ebay";
                     displayItems.Add(item);
                 }
 
