@@ -23,33 +23,38 @@ namespace PriceTracker.Data
             _userManager = userManager;
         }
 
-        public async Task TrackItem(ClaimsPrincipal principle, string productName, string productLink, string ProductEpid, string productSource)
+        public async Task TrackItem(ClaimsPrincipal principle, DisplayItem item)
         {
             var user = await _userManager.GetUserAsync(principle);
             Product trackingProduct;
 
             string identifier;
-            if(productSource == "Ebay")
+            if(item.ItemSource == "Ebay")
             {
-                identifier = ProductEpid;
+                identifier = item.ItemEbayId;
                 trackingProduct = _product.GetProductByIdentifier(identifier);
             }
             else
             {
-                identifier = productLink;
-                trackingProduct = _product.GetProductByIdentifier(productLink);
+                identifier = item.ItemLink;
+                trackingProduct = _product.GetProductByIdentifier(identifier);
             }
 
             if(trackingProduct == null)
             {
                 trackingProduct = new Product
                 {
-                    Name = productName,
+                    Name = item.ItemName,
                     ProductIdentifier = identifier,
-                    Source = productSource,
-                    Users = new List<ApplicationUser>()
+                    Source = item.ItemSource,
+                    Users = new List<ApplicationUser>(),
+                    PriceHistories = new List<ProductPriceHistory>()
                 };
                 trackingProduct.Users.Add(user);
+                trackingProduct.PriceHistories.Add(new ProductPriceHistory 
+                {
+                    Price = (float)item.ItemPrice
+                });
 
                 await _product.AddProductAsync(trackingProduct);
             }

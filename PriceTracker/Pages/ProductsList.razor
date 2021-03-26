@@ -18,12 +18,7 @@
 <div class="row">
     @foreach (DisplayItem item in displayAllItems)
     {
-        <ProductCardComponent prodImgSrc="@item.ItemImage"
-                              prodName="@item.ItemName"
-                              prodPrice="@item.ItemPrice.ToString()"
-                              prodLink="@item.ItemLink"
-                              prodEpid="@item.ItemEpid"
-                              prodSource="@item.ItemSource">
+        <ProductCardComponent prodItem="@item">
         </ProductCardComponent>
                               
     }

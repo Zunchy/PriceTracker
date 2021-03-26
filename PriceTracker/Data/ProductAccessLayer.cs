@@ -10,7 +10,6 @@ namespace PriceTracker.Data
     public interface IProductAccessLayer
     {
         IEnumerable GetAllProducts();
-        IEnumerable GetProductPriceHistories(int id);
         Task AddProductAsync(Product Products);
         Task UpdateProductAsync(Product Products);
         Product GetProduct(int id);

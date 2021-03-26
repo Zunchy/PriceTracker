@@ -1,7 +1,7 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject TrackingService TrackingService
 
-@if (prodName == null || prodPrice == null)
+@if (prodItem.ItemName == null || prodItem.ItemPrice.ToString() == null)
 {
     <h2>Loading...</h2>
 }
@@ -9,12 +9,12 @@ else
 {
     <div class="col-4">
         <div class="card border-dark">
-            <img class="card-img-top img-thumbnail" src="@prodImgSrc" alt="Card image" />
+            <img class="card-img-top img-thumbnail" src="@prodItem.ItemImage" alt="Card image" />
             <div class="card-body">
-                <h4 class="card-title">@prodName</h4>
+                <h4 class="card-title">@prodItem.ItemName</h4>
                 <p class="card-text">
                     <span><strong>Price: $</strong></span>
-                    <span>@prodPrice</span>
+                    <span>@prodItem.ItemPrice</span>
                 </p>
                 <p class="card-text">
                     <span><strong>Description: </strong></span>
@@ -22,11 +22,11 @@ else
                 </p>
                 <div class="row">
                     <div class="col-4">
-                        <a href="@prodLink" class="btn btn-info btn-lg">View</a>
+                        <a href="@prodItem.ItemLink" class="btn btn-info btn-lg">View</a>
                     </div>
                     <div class="col-4"></div>
                     <div class="col-4">
-                        <a @onclick="(e => InitiateTrack(prodName, prodLink, prodEpid, prodSource))" class="btn btn-primary btn-lg">Track</a>
+                        <a @onclick="(e => InitiateTrack(prodItem))" class="btn btn-primary btn-lg">Track</a>
                     </div><br />
                 </div>
                 <br />
@@ -38,14 +38,14 @@ else
 
 @code {
 
-    public async Task InitiateTrack(String itemName, String itemLink, string itemEpid, String itemSource)
+    public async Task InitiateTrack(DisplayItem item)
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var userPrinciple = authState.User;
 
         if (userPrinciple.Identity.IsAuthenticated)
         {
-            await TrackingService.TrackItem(userPrinciple, itemName, itemLink, itemEpid, itemSource);
+            await TrackingService.TrackItem(userPrinciple, item);
         }
     }
 

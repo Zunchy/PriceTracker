@@ -102,7 +102,7 @@ namespace PriceTracker.Data
                     item.ItemLink = product.itemWebUrl;
                     item.ItemImage = product.image.imageUrl;
                     item.ItemSource = "Ebay";
-                    item.ItemEpid = product.itemId;
+                    item.ItemEbayId = product.itemId;
                     displayItems.Add(item);
                 }
 
