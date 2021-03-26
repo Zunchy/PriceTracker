@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace PriceTracker.Data
 {
-    public interface IProductsAccessLayer
+    public interface IProductAccessLayer
     {
         IEnumerable GetAllProducts();
-        Task AddProductsAsync(Product Products);
-        Task UpdateProductsAsync(Product Products);
-        Product GetProducts(int id);
-        Product GetProductsByIdentifier(string ProductsIdentifier);
-        Task DeleteProductsAsync(int id);
+        IEnumerable GetProductPriceHistories(int id);
+        Task AddProductAsync(Product Products);
+        Task UpdateProductAsync(Product Products);
+        Product GetProduct(int id);
+        Product GetProductByIdentifier(string ProductsIdentifier);
+        Task DeleteProductAsync(int id);
     }
     
-    public class ProductsAccessLayer : IProductsAccessLayer
+    public class ProductsAccessLayer : IProductAccessLayer
     {
         private ApplicationDbContext _context;
         public ProductsAccessLayer(ApplicationDbContext context)
@@ -37,7 +38,7 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task AddProductsAsync(Product Products)
+        public async Task AddProductAsync(Product Products)
         {
             try
             {
@@ -50,7 +51,7 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task UpdateProductsAsync(Product Products)
+        public async Task UpdateProductAsync(Product Products)
         {
             try
             {
@@ -63,12 +64,12 @@ namespace PriceTracker.Data
             }
         }
 
-        public Product GetProducts(int id)
+        public Product GetProduct(int id)
         {
             try
             {
-                Product Products = _context.Products.Find(id);
-                return Products;
+                Product product = _context.Products.Find(id);
+                return product;
             }
             catch
             {
@@ -76,14 +77,14 @@ namespace PriceTracker.Data
             }
         }
 
-        public Product GetProductsByIdentifier(string ProductsIdentifier)
+        public Product GetProductByIdentifier(string ProductsIdentifier)
         {
             try
             {
-                Product Products = _context.Products
+                Product products = _context.Products
                                           .Where(p => p.ProductIdentifier == ProductsIdentifier)
                                           .FirstOrDefault();
-                return Products;
+                return products;
             }
             catch(Exception e)
             {
@@ -91,12 +92,12 @@ namespace PriceTracker.Data
             }
         }
 
-        public async Task DeleteProductsAsync(int id)
+        public async Task DeleteProductAsync(int id)
         {
             try
             {
-                Product Products = _context.Products.Find(id);
-                _context.Products.Remove(Products);
+                Product product = _context.Products.Find(id);
+                _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
             catch

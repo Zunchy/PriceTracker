@@ -12,11 +12,11 @@ namespace PriceTracker.Data
     /// </summary>
     public class TrackingService
     {
-        private readonly IProductsAccessLayer _product;
+        private readonly IProductAccessLayer _product;
         private readonly IUserProductAccessLayer _userProduct;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public TrackingService(IProductsAccessLayer product, IUserProductAccessLayer userProduct, UserManager<ApplicationUser> userManager)
+        public TrackingService(IProductAccessLayer product, IUserProductAccessLayer userProduct, UserManager<ApplicationUser> userManager)
         {
             _product = product;
             _userProduct = userProduct;
@@ -32,12 +32,12 @@ namespace PriceTracker.Data
             if(productSource == "Ebay")
             {
                 identifier = ProductEpid;
-                trackingProduct = _product.GetProductsByIdentifier(identifier);
+                trackingProduct = _product.GetProductByIdentifier(identifier);
             }
             else
             {
                 identifier = productLink;
-                trackingProduct = _product.GetProductsByIdentifier(productLink);
+                trackingProduct = _product.GetProductByIdentifier(productLink);
             }
 
             if(trackingProduct == null)
@@ -51,7 +51,7 @@ namespace PriceTracker.Data
                 };
                 trackingProduct.Users.Add(user);
 
-                await _product.AddProductsAsync(trackingProduct);
+                await _product.AddProductAsync(trackingProduct);
             }
             else
             {
@@ -89,7 +89,7 @@ namespace PriceTracker.Data
 
         public Product GetProductById(int productId)
         {
-            return _product.GetProducts(productId);
+            return _product.GetProduct(productId);
         }
     }
 }
