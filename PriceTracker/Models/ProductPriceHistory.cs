@@ -10,7 +10,7 @@ namespace PriceTracker.Data
     {
         [Key]
         public int PriceHistoryId { get; set; }
-        public byte[] Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }
         public float Price { get; set; }
     }
 }

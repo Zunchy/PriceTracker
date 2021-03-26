@@ -53,6 +53,7 @@ namespace PriceTracker.Data
                 trackingProduct.Users.Add(user);
                 trackingProduct.PriceHistories.Add(new ProductPriceHistory 
                 {
+                    Timestamp = DateTime.UtcNow,
                     Price = (float)item.ItemPrice
                 });
 
