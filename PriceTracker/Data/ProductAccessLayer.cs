@@ -29,7 +29,9 @@ namespace PriceTracker.Data
         {
             try
             {
-                return _context.Products.ToList();
+                return _context.Products
+                    .Include(p => p.PriceHistories)
+                    .ToList();
             }
             catch
             {

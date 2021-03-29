@@ -1,6 +1,7 @@
 ﻿@page "/"
 @*@inject NavigationManager NavigationManager*@
 @inject TrackingService TrackingService
+@inject EbayService EbayService
 
 
 <div class="container">
@@ -16,6 +17,8 @@
 
     private void TestTracker()
     {
+        //TrackingService.UpdateTrackedItemPrices();
+
         Scraper scraper = new Scraper();
         IQueryable<ApplicationUser> users = TrackingService.GetAllUsers();
 

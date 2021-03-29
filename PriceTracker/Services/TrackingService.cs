@@ -15,12 +15,14 @@ namespace PriceTracker.Data
         private readonly IProductAccessLayer _product;
         private readonly IUserProductAccessLayer _userProduct;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly EbayService _ebayService;
 
-        public TrackingService(IProductAccessLayer product, IUserProductAccessLayer userProduct, UserManager<ApplicationUser> userManager)
+        public TrackingService(IProductAccessLayer product, IUserProductAccessLayer userProduct, UserManager<ApplicationUser> userManager, EbayService ebayService)
         {
             _product = product;
             _userProduct = userProduct;
             _userManager = userManager;
+            _ebayService = ebayService;
         }
 
         public async Task TrackItem(ClaimsPrincipal principle, DisplayItem item)
@@ -78,6 +80,43 @@ namespace PriceTracker.Data
             //await dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateTrackedItemPrices()
+        {
+            //Get all products
+            var productList = _product.GetAllProducts();
+            //Loop through all products and retrieve current price from websites/api
+            foreach(Product product in productList)
+            {
+                float currentPrice;
+                if(product.Source == "Ebay")
+                {
+                    //Call Ebay Service, set currentPrice
+                    var currentProduct = await _ebayService.GetProductAsync(product.ProductIdentifier);
+                    currentPrice = (float)currentProduct.ItemPrice;
+                }
+                else
+                {
+                    //Call scraper, set current Price
+                    currentPrice = 0; //Temp
+                }
+
+                //Get the newest recorded priceHistory
+                var newestPriceHistory = product.PriceHistories.Aggregate((a, x) => x.Timestamp > a.Timestamp ? x : a);
+                
+                //If a change occurred create a new price history entry, else do nothing
+                if (currentPrice != newestPriceHistory.Price)
+                {
+                    product.PriceHistories.Add(new ProductPriceHistory
+                    {
+                        Timestamp = DateTime.UtcNow,
+                        Price = currentPrice
+                    });
+                    await _product.UpdateProductAsync(product);
+                }
+            }
+        }
+
+        //====================================
         public IQueryable<ApplicationUser> GetAllUsers()
         {
             return _userManager.Users;
