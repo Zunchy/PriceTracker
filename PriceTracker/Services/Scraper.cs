@@ -67,12 +67,15 @@ namespace PriceTracker.Data
 
         public double ScrapePriceByMercariItem(string itemLink)
         {
+            mercariDriver = new ChromeDriver(options);
+
             double newPrice = 0.0;
 
             mercariDriver.Navigate().GoToUrl(itemLink);
-            String sitePrice = mercariDriver.FindElement(By.XPath("//*[contains(@class, 'ProductPrice')]")).Text;
 
-            newPrice = Double.Parse(sitePrice.Substring(1, sitePrice.Length - 1));
+            String sitePrice = mercariDriver.FindElement(By.XPath("//meta[@property=\"product:price:amount\"]")).GetAttribute("content");
+
+            newPrice = Double.Parse(sitePrice);
 
             mercariDriver.Quit();
 
@@ -186,7 +189,6 @@ namespace PriceTracker.Data
 
         public String ScrapeEcrater(string searchTerm)
         {
-
             eCraterDriver = new ChromeDriver(options);
 
             // Search For Products

@@ -14,6 +14,8 @@ namespace PriceTracker.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<UserProduct> UserProduct { get; set; }
+        public DbSet<ProductPriceHistory> ProductPriceHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

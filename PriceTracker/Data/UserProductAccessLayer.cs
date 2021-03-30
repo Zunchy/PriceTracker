@@ -1,0 +1,48 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace PriceTracker.Data
+{
+    public interface IUserProductAccessLayer
+    {
+        IEnumerable GetAllUserProducts();
+        IEnumerable GetUserProductsByUserId(string userId);
+    }
+
+    public class UserProductAccessLayer : IUserProductAccessLayer
+    {
+        private ApplicationDbContext _context;
+        public UserProductAccessLayer(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public IEnumerable GetAllUserProducts()
+        {
+            try
+            {
+                return _context.UserProduct.ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable GetUserProductsByUserId(string userId)
+        {
+            try
+            {
+                return _context.UserProduct.Include(p => p.Product).ThenInclude(p => p.PriceHistories).Where(p => p.UserId == userId).ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+    }
+}

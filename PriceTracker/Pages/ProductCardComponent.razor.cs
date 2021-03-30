@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using PriceTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,7 @@ namespace PriceTracker.Pages
     {
         [Parameter] public ProductCardComponent Product { get; set; }
 
-        [Parameter] public string prodImgSrc { get; set; }
-
-        [Parameter] public string prodName { get; set; }
-
-        [Parameter] public string prodPrice { get; set; }
-
-        [Parameter] public string prodLink { get; set; }
+        [Parameter] public DisplayItem prodItem { get; set; }
 
     }
 }

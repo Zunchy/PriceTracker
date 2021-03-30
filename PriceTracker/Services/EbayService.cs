@@ -59,9 +59,53 @@ namespace PriceTracker.Data
             }
         }
 
-        //Search Ebay Api 
-        public  async Task<List<DisplayItem>> SearchProductAsync(string query, int numResults)
+        //Get Individual Product Info from ebay
+        public async Task<DisplayItem> GetProductAsync(string ebayid)
         {
+            if (currentToken == "NoToken")
+            {
+                await RequestClientTokenAsync();
+            }
+
+            //Clear Headers
+            client.DefaultRequestHeaders.Clear();
+
+            //Set Authorization header to contain the current token
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + currentToken);
+
+            string content = null;
+            HttpResponseMessage response = await client.GetAsync($"https://api.ebay.com/buy/browse/v1/item/{ebayid}?fieldgroups=PRODUCT");
+            content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                var ebayItem = JsonConvert.DeserializeObject<EbayItem>(content);
+
+                DisplayItem item = new DisplayItem
+                {
+                    ItemName = ebayItem.title,
+                    ItemPrice = Convert.ToDouble(ebayItem.price.value),
+                    ItemLink = ebayItem.itemWebUrl,
+                    ItemImage = ebayItem.image.imageUrl,
+                    ItemSource = "Ebay",
+                    ItemEbayId = ebayItem.itemId
+                };
+
+                return item;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        //Search Ebay Api 
+        public async Task<List<DisplayItem>> SearchProductAsync(string query, int numResults)
+        {
+            if(currentToken == "NoToken")
+            {
+                await RequestClientTokenAsync();
+            }
+
             //Clear Headers
             client.DefaultRequestHeaders.Clear();
 
@@ -87,6 +131,8 @@ namespace PriceTracker.Data
                     item.ItemPrice = Convert.ToDouble(product.price.value);
                     item.ItemLink = product.itemWebUrl;
                     item.ItemImage = product.image.imageUrl;
+                    item.ItemSource = "Ebay";
+                    item.ItemEbayId = product.itemId;
                     displayItems.Add(item);
                 }
 
@@ -94,18 +140,8 @@ namespace PriceTracker.Data
             }
             else
             {
-                var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                if(errorResponse.errors.First().message == "Invalid access token")
-                {
-                    //Attempt to refresh token
-                    await RequestClientTokenAsync();
-                    return await SearchProductAsync(query, numResults);
-                }
-                else
-                {
-                    //return error if token refresh fails
-                    return null;
-                }
+                //If error, just return an empty list
+                return new List<DisplayItem>();
             }
         }
     }
@@ -189,6 +225,153 @@ namespace PriceTracker.Data
     public class EbayAdditionalImage
     {
         public string imageUrl { get; set; }
+    }
+
+    public class EbayOriginalPrice
+    {
+        public string value { get; set; }
+        public string currency { get; set; }
+    }
+
+    public class EbayDiscountAmount
+    {
+        public string value { get; set; }
+        public string currency { get; set; }
+    }
+
+    public class EbayMarketingPrice
+    {
+        public EbayOriginalPrice originalPrice { get; set; }
+        public string discountPercentage { get; set; }
+        public EbayDiscountAmount discountAmount { get; set; }
+    }
+
+    public class EbayEstimatedAvailability
+    {
+        public List<string> deliveryOptions { get; set; }
+        public string availabilityThresholdType { get; set; }
+        public int availabilityThreshold { get; set; }
+        public string estimatedAvailabilityStatus { get; set; }
+        public int estimatedSoldQuantity { get; set; }
+    }
+
+    public class EbayRegionIncluded
+    {
+        public string regionName { get; set; }
+        public string regionType { get; set; }
+        public string regionId { get; set; }
+    }
+
+    public class EbayRegionExcluded
+    {
+        public string regionName { get; set; }
+        public string regionType { get; set; }
+        public string regionId { get; set; }
+    }
+
+    public class EbayShipToLocations
+    {
+        public List<EbayRegionIncluded> regionIncluded { get; set; }
+        public List<EbayRegionExcluded> regionExcluded { get; set; }
+    }
+
+    public class EbayReturnPeriod
+    {
+        public int value { get; set; }
+        public string unit { get; set; }
+    }
+
+    public class EbayReturnTerms
+    {
+        public bool returnsAccepted { get; set; }
+        public string refundMethod { get; set; }
+        public string returnMethod { get; set; }
+        public string returnShippingCostPayer { get; set; }
+        public EbayReturnPeriod returnPeriod { get; set; }
+        public string returnInstructions { get; set; }
+        public string restockingFeePercentage { get; set; }
+    }
+
+    public class EbayRegion
+    {
+        public string regionName { get; set; }
+        public string regionType { get; set; }
+    }
+
+    public class EbayTaxJurisdiction
+    {
+        public EbayRegion region { get; set; }
+        public string taxJurisdictionId { get; set; }
+    }
+
+    public class EbayTax
+    {
+        public EbayTaxJurisdiction taxJurisdiction { get; set; }
+        public string taxType { get; set; }
+        public string taxPercentage { get; set; }
+        public bool shippingAndHandlingTaxed { get; set; }
+        public bool includedInPrice { get; set; }
+    }
+
+    public class EbayLocalizedAspect
+    {
+        public string type { get; set; }
+        public string name { get; set; }
+        public string value { get; set; }
+    }
+
+    public class EbayRatingHistogram
+    {
+        public string rating { get; set; }
+        public int count { get; set; }
+    }
+
+    public class EbayPrimaryProductReviewRating
+    {
+        public int reviewCount { get; set; }
+        public string averageRating { get; set; }
+        public List<EbayRatingHistogram> ratingHistograms { get; set; }
+    }
+
+    public class EbayItem
+    {
+        public string itemId { get; set; }
+        public string sellerItemRevision { get; set; }
+        public string title { get; set; }
+        public string subtitle { get; set; }
+        public string shortDescription { get; set; }
+        public EbayPrice price { get; set; }
+        public string categoryPath { get; set; }
+        public string condition { get; set; }
+        public string conditionId { get; set; }
+        public EbayItemLocation itemLocation { get; set; }
+        public EbayImage image { get; set; }
+        public List<EbayAdditionalImage> additionalImages { get; set; }
+        public EbayMarketingPrice marketingPrice { get; set; }
+        public string color { get; set; }
+        public string brand { get; set; }
+        public EbaySeller seller { get; set; }
+        public string gtin { get; set; }
+        public string mpn { get; set; }
+        public string epid { get; set; }
+        public List<EbayEstimatedAvailability> estimatedAvailabilities { get; set; }
+        public List<EbayShippingOption> shippingOptions { get; set; }
+        public EbayShipToLocations shipToLocations { get; set; }
+        public EbayReturnTerms returnTerms { get; set; }
+        public List<EbayTax> taxes { get; set; }
+        public List<EbayLocalizedAspect> localizedAspects { get; set; }
+        public int quantityLimitPerBuyer { get; set; }
+        public EbayPrimaryProductReviewRating primaryProductReviewRating { get; set; }
+        public bool topRatedBuyingExperience { get; set; }
+        public List<string> buyingOptions { get; set; }
+        public string itemWebUrl { get; set; }
+        public string description { get; set; }
+        public Product product { get; set; }
+        public bool enabledForGuestCheckout { get; set; }
+        public bool eligibleForInlineCheckout { get; set; }
+        public string legacyItemId { get; set; }
+        public bool adultOnly { get; set; }
+        public string categoryId { get; set; }
     }
 
     public class EbayItemSummary
