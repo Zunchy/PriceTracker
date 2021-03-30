@@ -86,10 +86,13 @@ namespace PriceTracker.Data
             Scraper scraper = new Scraper();
             IQueryable<ApplicationUser> users = GetAllUsers();
 
+            List<UserProduct> productstoBeUpdated = new List<UserProduct>();
+
             foreach (ApplicationUser user in users)
             {
                 //Get all products for the user
                 var productList = _userProduct.GetUserProductsByUserId(user.Id);
+
 
                 //Loop through all products and retrieve current price from websites/api
                 foreach (UserProduct userProduct in productList)
@@ -126,17 +129,22 @@ namespace PriceTracker.Data
                     //If a change occurred create a new price history entry, else do nothing
                     if (currentPrice != newestPriceHistory.Price)
                     {
-                        // This will error, cannot complete a transaction in a for each loop of database objects Needs to be deferred to a list
-                        // and updated after the loop
+
                         userProduct.Product.PriceHistories.Add(new ProductPriceHistory
                         {
                             Timestamp = DateTime.UtcNow,
                             Price = currentPrice
                         });
-                        await _product.UpdateProductAsync(userProduct.Product);
+                        productstoBeUpdated.Add(userProduct);
+                        
                     }
                 }
-            }  
+
+
+            }
+
+            foreach (UserProduct productToBeUpdated in productstoBeUpdated)
+                await _product.UpdateProductAsync(productToBeUpdated.Product);
         }
 
         //====================================
