@@ -82,38 +82,61 @@ namespace PriceTracker.Data
 
         public async Task UpdateTrackedItemPrices()
         {
-            //Get all products
-            var productList = _product.GetAllProducts();
-            //Loop through all products and retrieve current price from websites/api
-            foreach(Product product in productList)
-            {
-                float currentPrice;
-                if(product.Source == "Ebay")
-                {
-                    //Call Ebay Service, set currentPrice
-                    var currentProduct = await _ebayService.GetProductAsync(product.ProductIdentifier);
-                    currentPrice = (float)currentProduct.ItemPrice;
-                }
-                else
-                {
-                    //Call scraper, set current Price
-                    currentPrice = 0; //Temp
-                }
 
-                //Get the newest recorded priceHistory
-                var newestPriceHistory = product.PriceHistories.Aggregate((a, x) => x.Timestamp > a.Timestamp ? x : a);
-                
-                //If a change occurred create a new price history entry, else do nothing
-                if (currentPrice != newestPriceHistory.Price)
+            Scraper scraper = new Scraper();
+            IQueryable<ApplicationUser> users = GetAllUsers();
+
+            foreach (ApplicationUser user in users)
+            {
+                //Get all products for the user
+                var productList = _userProduct.GetUserProductsByUserId(user.Id);
+
+                //Loop through all products and retrieve current price from websites/api
+                foreach (UserProduct userProduct in productList)
                 {
-                    product.PriceHistories.Add(new ProductPriceHistory
+                    float currentPrice = 0.0F;
+                    if (userProduct.Product.Source == "Ebay")
                     {
-                        Timestamp = DateTime.UtcNow,
-                        Price = currentPrice
-                    });
-                    await _product.UpdateProductAsync(product);
+                        //Call Ebay Service, set currentPrice
+                        var currentProduct = await _ebayService.GetProductAsync(userProduct.Product.ProductIdentifier);
+                        currentPrice = (float)currentProduct.ItemPrice;
+                    }
+                    else
+                    {
+                        switch (userProduct.Product.Source)
+                        {
+                            case "Mercari":
+                                currentPrice = (float)scraper.ScrapePriceByMercariItem(userProduct.Product.ProductIdentifier);
+                                break;
+                            case "eBid":
+                                currentPrice = (float)scraper.ScrapePriceByEbidItem(userProduct.Product.ProductIdentifier);
+                                break;
+                            case "Poshmark":
+                                currentPrice = (float)scraper.ScrapePriceByPoshmarkItem(userProduct.Product.ProductIdentifier);
+                                break;
+                            case "eCrater":
+                                currentPrice = (float)scraper.ScrapePriceByEcraterItem(userProduct.Product.ProductIdentifier);
+                                break;
+                        }
+                    }
+
+                    //Get the newest recorded priceHistory
+                    var newestPriceHistory = userProduct.Product.PriceHistories.Aggregate((a, x) => x.Timestamp > a.Timestamp ? x : a);
+
+                    //If a change occurred create a new price history entry, else do nothing
+                    if (currentPrice != newestPriceHistory.Price)
+                    {
+                        // This will error, cannot complete a transaction in a for each loop of database objects Needs to be deferred to a list
+                        // and updated after the loop
+                        userProduct.Product.PriceHistories.Add(new ProductPriceHistory
+                        {
+                            Timestamp = DateTime.UtcNow,
+                            Price = currentPrice
+                        });
+                        await _product.UpdateProductAsync(userProduct.Product);
+                    }
                 }
-            }
+            }  
         }
 
         //====================================

@@ -69,7 +69,9 @@ namespace PriceTracker.Data
         {
             try
             {
-                Product product = _context.Products.Find(id);
+                Product product = _context.Products.Include(p => p.PriceHistories)
+                                                    .Where(p => p.ProductId == id)
+                                                    .FirstOrDefault();
                 return product;
             }
             catch
@@ -83,6 +85,7 @@ namespace PriceTracker.Data
             try
             {
                 Product products = _context.Products
+                                          .Include(p => p.PriceHistories)
                                           .Where(p => p.ProductIdentifier == ProductsIdentifier)
                                           .FirstOrDefault();
                 return products;

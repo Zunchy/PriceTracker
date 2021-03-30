@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace PriceTracker.Data
         {
             try
             {
-                return _context.UserProduct.Where(p => p.UserId == userId).ToList();
+                return _context.UserProduct.Include(p => p.Product).ThenInclude(p => p.PriceHistories).Where(p => p.UserId == userId).ToList();
             }
             catch
             {

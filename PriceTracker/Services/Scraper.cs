@@ -72,9 +72,10 @@ namespace PriceTracker.Data
             double newPrice = 0.0;
 
             mercariDriver.Navigate().GoToUrl(itemLink);
-            String sitePrice = mercariDriver.FindElement(By.XPath("//*[contains(@class, 'ProductPrice')]")).Text;
 
-            newPrice = Double.Parse(sitePrice.Substring(1, sitePrice.Length - 1));
+            String sitePrice = mercariDriver.FindElement(By.XPath("//meta[@property=\"product:price:amount\"]")).GetAttribute("content");
+
+            newPrice = Double.Parse(sitePrice);
 
             mercariDriver.Quit();
 
