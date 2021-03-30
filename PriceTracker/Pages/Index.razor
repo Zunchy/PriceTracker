@@ -1,16 +1,24 @@
 ﻿@page "/"
 @*@inject NavigationManager NavigationManager*@
+@inject TrackingService TrackingService
+@inject EbayService EbayService
 
 
 <div class="container">
-@*<div>*@
+    @*<div>*@
     <h1>Search for a product</h1>
     <Searchcomponent></Searchcomponent>
 </div>
 
-
+<button @onclick="(e => TestTracker())">Test</button>
 
 
 @code {
-    
+
+    private void TestTracker()
+    {
+        TrackingService.UpdateTrackedItemPrices();
+
+    }
+
 }

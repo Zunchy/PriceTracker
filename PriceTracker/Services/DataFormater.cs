@@ -21,6 +21,8 @@ namespace PriceTracker.Data
                 {
                     DisplayItem newItem = new DisplayItem();
 
+                    newItem.ItemSource = "Mercari";
+
                     newItem.ItemName = itemInfo.First();
 
                     itemInfo.Remove(itemInfo.First());
@@ -61,6 +63,8 @@ namespace PriceTracker.Data
                 {
                     DisplayItem newItem = new DisplayItem();
 
+                    newItem.ItemSource = "eBid";
+
                     newItem.ItemName = itemInfo.First();
 
                     itemInfo.Remove(itemInfo.First());
@@ -93,6 +97,8 @@ namespace PriceTracker.Data
                 if (itemInfo.Count > 3)
                 {
                     DisplayItem newItem = new DisplayItem();
+
+                    newItem.ItemSource = "Poshmark";
 
                     newItem.ItemName = itemInfo.First();
 
@@ -128,6 +134,8 @@ namespace PriceTracker.Data
                 if (itemInfo.Count > 1)
                 {
                     DisplayItem newItem = new DisplayItem();
+
+                    newItem.ItemSource = "eCrater";
 
                     newItem.ItemName = itemInfo[1];
 
