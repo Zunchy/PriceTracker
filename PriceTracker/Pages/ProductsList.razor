@@ -10,22 +10,27 @@
     <Searchcomponent></Searchcomponent>
 </p>
 
-@*TODO fix persistent loading*@
-<div class="spinner"></div>
-
-
-@* Displays all of the products in card form *@
-<div class="row">
-    @foreach (DisplayItem item in displayAllItems)
-    {
-        <ProductCardComponent prodItem="@item">
-        </ProductCardComponent>
-                              
-    }
-</div>
+@*Displays spinner while the product data is scraped*@
+@if (loadComplete == false)
+{
+        <div class="spinner"></div>
+}
+else
+{
+    @* Displays all of the products in card form *@
+    <div class="row">
+        @foreach (DisplayItem item in displayAllItems)
+        {
+            <ProductCardComponent prodItem="@item">
+            </ProductCardComponent>
+        }
+    </div>
+}
 
 
 @code {
+
+    private bool loadComplete = false;
 
     [Parameter]
     public String searchTerm { get; set; }
@@ -79,6 +84,7 @@
         displayAllItems.AddRange(displayItemsEbid);
         displayAllItems.AddRange(displayItemsPoshmark);
         displayAllItems.AddRange(displayItemsEcrater);
+        loadComplete = true;
     }
 
 }
