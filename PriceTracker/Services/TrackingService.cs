@@ -170,7 +170,7 @@ namespace PriceTracker.Data
 
         public async Task GetUserByPrincipal(ClaimsPrincipal principal)
         {
-            return await _userManager.GetUserAsync(principle);
+            return await _userManager.GetUserAsync(principal);
         }
     }
 }
