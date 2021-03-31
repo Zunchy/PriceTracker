@@ -24,45 +24,51 @@ namespace PriceTracker.Data
             options.AddArguments("--headless");
         }
 
-        public String ScrapeMercari(string searchTerm)
+        public String ScrapeMercari(string searchTerm, bool shouldBeSearched)
         {
-            mercariDriver = new ChromeDriver(options);
-
-            // Search For Products
-
-            String searchUrl = $"https://www.mercari.com/search/?keyword={searchTerm}";
-            mercariDriver.Navigate().GoToUrl(searchUrl);
-
-            IReadOnlyCollection<IWebElement> searchSpace = mercariDriver.FindElements(By.XPath("//div[@data-testid=\"ItemContainer\"]"));
-
-            String result = "";
-            foreach (IWebElement item in searchSpace)
+            if (shouldBeSearched)
             {
-                try
+                mercariDriver = new ChromeDriver(options);
+
+                // Search For Products
+
+                String searchUrl = $"https://www.mercari.com/search/?keyword={searchTerm}";
+                mercariDriver.Navigate().GoToUrl(searchUrl);
+
+                IReadOnlyCollection<IWebElement> searchSpace = mercariDriver.FindElements(By.XPath("//div[@data-testid=\"ItemContainer\"]"));
+
+                String result = "";
+                foreach (IWebElement item in searchSpace)
                 {
-                    IWebElement itemContent = item.FindElement(By.XPath("./.."));
-                    String link = itemContent.GetAttribute("href");
-                    String image = "";
+                    try
+                    {
+                        IWebElement itemContent = item.FindElement(By.XPath("./.."));
+                        String link = itemContent.GetAttribute("href");
+                        String image = "";
 
-                    result += itemContent.Text;
-                    result += "\r\n";
-                    result += link;
-                    result += "\r\n";
+                        result += itemContent.Text;
+                        result += "\r\n";
+                        result += link;
+                        result += "\r\n";
 
-                    String imagePath = link.Split("/")[5];
-                    image = $"https://mercari-images.global.ssl.fastly.net/photos/{imagePath}_1.jpg?1615326085&w=200&h=200&fitcrop&sharpen";
+                        String imagePath = link.Split("/")[5];
+                        image = $"https://mercari-images.global.ssl.fastly.net/photos/{imagePath}_1.jpg?1615326085&w=200&h=200&fitcrop&sharpen";
 
-                    result += image;
-                    result += "END ITEM";
+                        result += image;
+                        result += "END ITEM";
+                    }
+                    catch { }
+
                 }
-                catch { }
 
+                mercariDriver.Quit();
+
+                return result;
             }
-
-            mercariDriver.Quit();
-
-            return result;
-
+            else
+            {
+                return "";
+            }
         }
 
         public double ScrapePriceByMercariItem(string itemLink)
@@ -82,42 +88,50 @@ namespace PriceTracker.Data
             return newPrice;
         }
 
-        public String ScrapeEBid(string searchTerm)
+        public String ScrapeEBid(string searchTerm, bool shouldBeSearched)
         {
-            eBidDriver = new ChromeDriver(options);
-
-            // Search For Products
-
-            String searchUrl = $"https://www.ebid.net/us/perl/main.cgi?mo=search&words={searchTerm}";
-            eBidDriver.Navigate().GoToUrl(searchUrl);
-
-            IReadOnlyCollection<IWebElement> searchSpace = eBidDriver.FindElements(By.XPath("//li[@class='showroomcell']"));
-
-            String result = "";
-            foreach (IWebElement item in searchSpace)
+            if (shouldBeSearched)
             {
-                try
+                eBidDriver = new ChromeDriver(options);
+
+                // Search For Products
+
+                String searchUrl = $"https://www.ebid.net/us/perl/main.cgi?mo=search&words={searchTerm}";
+                eBidDriver.Navigate().GoToUrl(searchUrl);
+
+                IReadOnlyCollection<IWebElement> searchSpace = eBidDriver.FindElements(By.XPath("//li[@class='showroomcell']"));
+
+                String result = "";
+                foreach (IWebElement item in searchSpace)
                 {
-                    String name = item.FindElement(By.TagName("h2")).Text;
-                    String price = item.FindElement(By.ClassName("dkgrey")).Text;
-                    String link = item.FindElement(By.TagName("a")).GetAttribute("href");
-                    String image = item.FindElement(By.TagName("img")).GetAttribute("src");
+                    try
+                    {
+                        String name = item.FindElement(By.TagName("h2")).Text;
+                        String price = item.FindElement(By.ClassName("dkgrey")).Text;
+                        String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+                        String image = item.FindElement(By.TagName("img")).GetAttribute("src");
 
-                    result += name;
-                    result += "\r\n";
-                    result += price;
-                    result += "\r\n";
-                    result += link;
-                    result += "\r\n";
-                    result += image;
-                    result += "END ITEM";
+                        result += name;
+                        result += "\r\n";
+                        result += price;
+                        result += "\r\n";
+                        result += link;
+                        result += "\r\n";
+                        result += image;
+                        result += "END ITEM";
+                    }
+                    catch { }
                 }
-                catch { }
+
+                eBidDriver.Quit();
+
+                return result;
             }
-
-            eBidDriver.Quit();
-
-            return result;
+            else
+            {
+                return "";
+            }
+            
         }
 
         public double ScrapePriceByEbidItem(string itemLink)
@@ -136,39 +150,47 @@ namespace PriceTracker.Data
             return newPrice;
         }
 
-        public String ScrapePoshmark(string searchTerm)
+        public String ScrapePoshmark(string searchTerm, bool shouldBeSearched)
         {
-            poshmarkDriver = new ChromeDriver(options);
-
-            // Search For Products
-            String searchUrl = $"https://poshmark.com/search?query={searchTerm}";
-            poshmarkDriver.Navigate().GoToUrl(searchUrl);
-
-            ((IJavaScriptExecutor)poshmarkDriver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
-
-            IReadOnlyCollection<IWebElement> searchSpace = poshmarkDriver.FindElements(By.XPath("//*[contains(@class, 'card')]"));
-
-            String result = "";
-            foreach (IWebElement item in searchSpace)
+            if (shouldBeSearched)
             {
-                try
+                poshmarkDriver = new ChromeDriver(options);
+
+                // Search For Products
+                String searchUrl = $"https://poshmark.com/search?query={searchTerm}";
+                poshmarkDriver.Navigate().GoToUrl(searchUrl);
+
+                ((IJavaScriptExecutor)poshmarkDriver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+
+                IReadOnlyCollection<IWebElement> searchSpace = poshmarkDriver.FindElements(By.XPath("//*[contains(@class, 'card')]"));
+
+                String result = "";
+                foreach (IWebElement item in searchSpace)
                 {
-                    String link = item.FindElement(By.TagName("a")).GetAttribute("href");
-                    String image = item.FindElement(By.TagName("img")).GetAttribute("src");
+                    try
+                    {
+                        String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+                        String image = item.FindElement(By.TagName("img")).GetAttribute("src");
 
-                    result += item.Text;
-                    result += "\r\n";
-                    result += link;
-                    result += "\r\n";
-                    result += image;
-                    result += "END ITEM";
+                        result += item.Text;
+                        result += "\r\n";
+                        result += link;
+                        result += "\r\n";
+                        result += image;
+                        result += "END ITEM";
+                    }
+                    catch { }
                 }
-                catch { }
+
+                poshmarkDriver.Quit();
+
+                return result;
             }
-
-            poshmarkDriver.Quit();
-
-            return result;
+            else
+            {
+                return "";
+            }
+           
         }
 
         public double ScrapePriceByPoshmarkItem(string itemLink)
@@ -187,37 +209,45 @@ namespace PriceTracker.Data
             return newPrice;
         }
 
-        public String ScrapeEcrater(string searchTerm)
+        public String ScrapeEcrater(string searchTerm, bool shouldBeSearched)
         {
-            eCraterDriver = new ChromeDriver(options);
-
-            // Search For Products
-            String searchUrl = $"https://www.ecrater.com/filter.php?keywords={searchTerm}";
-            eCraterDriver.Navigate().GoToUrl(searchUrl);
-
-            IReadOnlyCollection<IWebElement> searchSpace = eCraterDriver.FindElements(By.XPath("//*[contains(@class, 'product-item')]"));
-
-            String result = "";
-            foreach (IWebElement item in searchSpace)
+            if (shouldBeSearched)
             {
-                try
+                eCraterDriver = new ChromeDriver(options);
+
+                // Search For Products
+                String searchUrl = $"https://www.ecrater.com/filter.php?keywords={searchTerm}";
+                eCraterDriver.Navigate().GoToUrl(searchUrl);
+
+                IReadOnlyCollection<IWebElement> searchSpace = eCraterDriver.FindElements(By.XPath("//*[contains(@class, 'product-item')]"));
+
+                String result = "";
+                foreach (IWebElement item in searchSpace)
                 {
-                    String link = item.FindElement(By.TagName("a")).GetAttribute("href");
-                    String image = item.FindElement(By.TagName("img")).GetAttribute("src");
+                    try
+                    {
+                        String link = item.FindElement(By.TagName("a")).GetAttribute("href");
+                        String image = item.FindElement(By.TagName("img")).GetAttribute("src");
 
-                    result += item.Text;
-                    result += "\r\n";
-                    result += link;
-                    result += "\r\n";
-                    result += image;
-                    result += "END ITEM";
+                        result += item.Text;
+                        result += "\r\n";
+                        result += link;
+                        result += "\r\n";
+                        result += image;
+                        result += "END ITEM";
+                    }
+                    catch { }
                 }
-                catch { }
+
+                eCraterDriver.Quit();
+
+                return result;
             }
-
-            eCraterDriver.Quit();
-
-            return result;
+            else
+            {
+                return "";
+            }
+           
         }
 
         public double ScrapePriceByEcraterItem(string itemLink)
