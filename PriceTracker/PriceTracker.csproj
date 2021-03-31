@@ -23,6 +23,8 @@
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="88.0.4324.9600" />
     <PackageReference Include="Sendgrid" Version="9.22.0" />
+    <PackageReference Include="Twilio" Version="5.56.0" />
+    <PackageReference Include="Twilio.AspNet.Mvc" Version="5.37.2" />
   </ItemGroup>
 
 </Project>

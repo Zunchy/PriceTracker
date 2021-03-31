@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using SendGrid;
@@ -21,7 +20,7 @@ namespace PriceTracker.Areas.Identity.Pages.Account.Services
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            return Execute(Options.SendGridKey, subject, message, email);
+            return Execute("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", subject, message, email);
         }
 
         public Task Execute(string apiKey, string subject, string message, string email)
