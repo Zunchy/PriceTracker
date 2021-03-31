@@ -1,0 +1,51 @@
+﻿@page "/myproducts"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject TrackingService TrackingService
+
+
+<h1>My Tracked Products:</h1>
+
+<p>
+    <Searchcomponent></Searchcomponent>
+</p>
+
+@*Displays spinner while the product data is scraped*@
+@if (loadComplete == false)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    @* Displays all of the products in card form *@
+    @*<div class="row">
+        @foreach (DisplayItem item in displayAllItems)
+        {
+            <ProductCardComponent prodItem="@item">
+            </ProductCardComponent>
+        }
+    </div>*@
+}
+
+
+@code {
+    private bool loadComplete = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userPrinciple = authState.User;
+
+        if (userPrinciple.Identity.IsAuthenticated) // User is logged in
+        {
+            List<UserProduct> usersProducts 
+                = TrackingService.GetUserProductsByUserId(userPrinciple.ToString());
+        }
+        else // User is not logged in
+        {
+
+        }
+    }
+
+
+}
