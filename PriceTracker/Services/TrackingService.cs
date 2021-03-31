@@ -167,5 +167,10 @@ namespace PriceTracker.Data
         {
             return _product.GetProduct(productId);
         }
+
+        public async Task<ApplicationUser> GetUserByPrincipal(ClaimsPrincipal principal)
+        {
+            return await _userManager.GetUserAsync(principal);
+        }
     }
 }
