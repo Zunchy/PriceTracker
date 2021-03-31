@@ -86,6 +86,7 @@ namespace PriceTracker.Data
             {
                 Product products = _context.Products
                                           .Include(p => p.PriceHistories)
+                                          .Include(p => p.Users)
                                           .Where(p => p.ProductIdentifier == ProductsIdentifier)
                                           .FirstOrDefault();
                 return products;
