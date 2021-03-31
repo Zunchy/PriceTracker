@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PriceTracker.Areas.Identity;
 using PriceTracker.Data;
+using PriceTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace PriceTracker
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddSingleton<EbayService>();
             services.AddTransient<TrackingService>();
+            services.AddHostedService<PriceUpdateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
