@@ -60,7 +60,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
+        if (bool.Parse(ebayCheck))
+        {
+            displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
+        }
+
         await Task.Run(ScrapeWebsites);
     }
 
