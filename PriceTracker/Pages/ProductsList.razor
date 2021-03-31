@@ -1,7 +1,8 @@
-﻿@page "/productslist/{searchTerm}"
+﻿@page "/productslist/{searchTerm}/{ebayCheck}/{mercariCheck}/{poshmarkCheck}/{ebidCheck}/{ecraterCheck}"
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
 @inject EbayService ProductService
+
 
 <h1>Product Results for: @searchTerm</h1>
 
@@ -12,14 +13,14 @@
 @*TODO fix persistent loading*@
 <div class="spinner"></div>
 
+
 @* Displays all of the products in card form *@
 <div class="row">
     @foreach (DisplayItem item in displayAllItems)
     {
-        <ProductCardComponent prodImgSrc = "@item.ItemImage"
-                              prodName   = "@item.ItemName"
-                              prodPrice  = "@item.ItemPrice.ToString()"
-                              prodLink   = "@item.ItemLink"></ProductCardComponent>
+        <ProductCardComponent prodItem="@item">
+        </ProductCardComponent>
+
     }
 </div>
 
@@ -29,36 +30,41 @@
     [Parameter]
     public String searchTerm { get; set; }
 
+    [Parameter]
+    public String ebayCheck { get; set; }
 
     [Parameter]
-    public bool ebayCheck { get; set; } = true;
+    public String mercariCheck { get; set; }
 
     [Parameter]
-    public bool ebidCheck { get; set; } = true;
+    public String poshmarkCheck { get; set; }
 
     [Parameter]
-    public bool ecraterCheck { get; set; } = true;
+    public String ebidCheck { get; set; }
 
     [Parameter]
-    public bool mercariCheck { get; set; } = true;
+    public String ecraterCheck { get; set; }
 
-    [Parameter]
-    public bool poshmarkCheck { get; set; } = true;
+
 
     DataFormater formater = new DataFormater();
     Scraper scraper = new Scraper();
 
     List<DisplayItem> displayItemsEbay = new List<DisplayItem>();
-    List<DisplayItem> displayItemsMercari   = new List<DisplayItem>();
-    List<DisplayItem> displayItemsEbid      = new List<DisplayItem>();
-    List<DisplayItem> displayItemsPoshmark  = new List<DisplayItem>();
-    List<DisplayItem> displayItemsEcrater   = new List<DisplayItem>();
-    List<DisplayItem> displayAllItems       = new List<DisplayItem>();
+    List<DisplayItem> displayItemsMercari = new List<DisplayItem>();
+    List<DisplayItem> displayItemsEbid = new List<DisplayItem>();
+    List<DisplayItem> displayItemsPoshmark = new List<DisplayItem>();
+    List<DisplayItem> displayItemsEcrater = new List<DisplayItem>();
+    List<DisplayItem> displayAllItems = new List<DisplayItem>();
 
 
     protected override async Task OnInitializedAsync()
     {
-        displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
+        if (bool.Parse(ebayCheck))
+        {
+            displayItemsEbay = await ProductService.SearchProductAsync(searchTerm, 20);
+        }
+
         await Task.Run(ScrapeWebsites);
     }
 
@@ -67,10 +73,10 @@
 
         // Scrape the websites and Format the data
         Parallel.Invoke(
-            () => displayItemsMercari   = formater.FormatMercari(scraper.ScrapeMercari(searchTerm)),
-            () => displayItemsEbid      = formater.FormatEBid(scraper.ScrapeEBid(searchTerm)),
-            () => displayItemsPoshmark  = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm)),
-            () => displayItemsEcrater   = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm)));
+            () => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm, bool.Parse(mercariCheck))),
+            () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm, bool.Parse(ebidCheck))),
+            () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm, bool.Parse(poshmarkCheck))),
+            () => displayItemsEcrater = formater.FormatEcrater(scraper.ScrapeEcrater(searchTerm, bool.Parse(ecraterCheck))));
 
         // Add all lists into one list
         displayAllItems.AddRange(displayItemsEbay);
@@ -80,5 +86,4 @@
         displayAllItems.AddRange(displayItemsEcrater);
     }
 
-    
 }

@@ -40,16 +40,6 @@
         </li>
 
         <li>
-            <input type="checkbox" id="ebidCheckBox" @bind-value="ebidCheck" checked />
-            <label for="ebidCheckBox">Ebid</label>
-        </li>
-
-        <li>
-            <input type="checkbox" id="ecraterCheckBox" @bind-value="ecraterCheck" checked />
-            <label for="ecraterCheckBox">eCrater</label>
-        </li>
-
-        <li>
             <input type="checkbox" id="mercariCheckBox" @bind-value="mercariCheck" checked />
             <label for="mercariCheckBox">Mercari</label>
         </li>
@@ -57,6 +47,16 @@
         <li>
             <input type="checkbox" id="poshmarkCheckBox" @bind-value="poshmarkCheck" checked />
             <label for="poshmarkCheckBox">Poshmark</label>
+        </li>
+
+        <li>
+            <input type="checkbox" id="ebidCheckBox" @bind-value="ebidCheck" checked />
+            <label for="ebidCheckBox">Ebid</label>
+        </li>
+
+        <li>
+            <input type="checkbox" id="ecraterCheckBox" @bind-value="ecraterCheck" checked />
+            <label for="ecraterCheckBox">eCrater</label>
         </li>
     </ul>
 </div>
@@ -77,11 +77,17 @@
 @code {
     private string searchTerm;
 
+    private bool ebayCheck = true;
+    private bool mercariCheck = true;
+    private bool poshmarkCheck = true;
+    private bool ebidCheck = true;
+    private bool ecraterCheck = true;
+
     private void GoToProductsComponent()
     {
         GetSelected();
-        NavigationManager.NavigateTo($"productslist/{searchTerm}", true); // true refreshes the page
-                                                                          //InvokeAsync(() => { StateHasChanged(); });
+        NavigationManager.NavigateTo($"productslist/{searchTerm}/{ebayCheck}/{mercariCheck}/{poshmarkCheck}/{ebidCheck}/{ecraterCheck}", true); // true refreshes the page
+                                                                                                                                                //InvokeAsync(() => { StateHasChanged(); });
     }
 
     private void Enter()
@@ -90,11 +96,7 @@
             GoToProductsComponent();
     }
 
-    private bool ebayCheck = true;
-    private bool ebidCheck = true;
-    private bool ecraterCheck = true;
-    private bool mercariCheck = true;
-    private bool poshmarkCheck = true;
+
 
     List<bool> isSelected { get; set; } = new List<bool> { };
     private void GetSelected()

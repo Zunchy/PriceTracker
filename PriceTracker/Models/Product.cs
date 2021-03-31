@@ -14,5 +14,7 @@ namespace PriceTracker.Data
 
         public ICollection<ApplicationUser> Users { get; set; }
         public List<UserProduct> UserProducts { get; set; }
+
+        public ICollection<ProductPriceHistory> PriceHistories { get; set; }
     }
 }
