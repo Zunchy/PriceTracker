@@ -46,12 +46,9 @@ namespace PriceTracker
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddSingleton<EbayService>();
             services.AddTransient<TrackingService>();
-            // for registration (email and phone)
-            //services.AddTransient<IEmailSender, AuthMessageSender>();
-           // services.AddTransient<ISmsSender, AuthMessageSender>();
+            // email services
             services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<Areas.Identity.Pages.Account.Services.AuthMessageSenderOptions>(Configuration);
-            
+            services.Configure<AuthMessageSenderOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -15,3 +15,4 @@ namespace PriceTracker.Areas.Identity.Pages.Account.Services
         public string SendGridKey { get; set; }
     }
 }
+
