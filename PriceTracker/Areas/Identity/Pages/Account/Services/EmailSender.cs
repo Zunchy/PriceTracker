@@ -21,7 +21,7 @@ namespace PriceTracker.Areas.Identity.Pages.Account.Services
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            return Execute(Options.SendGridKey, subject, message, email);
+            return Execute("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", subject, message, email);
         }
 
         public Task Execute(string apiKey, string subject, string message, string email)
