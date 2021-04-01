@@ -66,7 +66,10 @@ namespace PriceTracker.Data
             }
             else
             {
-                trackingProduct.Users.Add(user);
+                if (!trackingProduct.Users.Contains(user))
+                {
+                    trackingProduct.Users.Add(user);
+                }
             }
             /*dbContext.TrackedItems.Add(new TrackedItem
             {
