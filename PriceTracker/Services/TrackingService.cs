@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,15 @@ namespace PriceTracker.Data
         private readonly IUserProductAccessLayer _userProduct;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly EbayService _ebayService;
+        private readonly IEmailSender _emailSender;
 
-        public TrackingService(IProductAccessLayer product, IUserProductAccessLayer userProduct, UserManager<ApplicationUser> userManager, EbayService ebayService)
+        public TrackingService(IProductAccessLayer product, IUserProductAccessLayer userProduct, UserManager<ApplicationUser> userManager, EbayService ebayService, IEmailSender emailSender)
         {
             _product = product;
             _userProduct = userProduct;
             _userManager = userManager;
             _ebayService = ebayService;
+            _emailSender = emailSender;
         }
 
         public async Task TrackItem(ClaimsPrincipal principle, DisplayItem item)
@@ -63,7 +66,10 @@ namespace PriceTracker.Data
             }
             else
             {
-                trackingProduct.Users.Add(user);
+                if (!trackingProduct.Users.Contains(user))
+                {
+                    trackingProduct.Users.Add(user);
+                }
             }
             /*dbContext.TrackedItems.Add(new TrackedItem
             {
@@ -93,6 +99,8 @@ namespace PriceTracker.Data
                 //Get all products for the user
                 var productList = _userProduct.GetUserProductsByUserId(user.Id);
 
+                String emailMessage = String.Empty;
+                int itemChangeCount = 0;
 
                 //Loop through all products and retrieve current price from websites/api
                 foreach (UserProduct userProduct in productList)
@@ -126,9 +134,14 @@ namespace PriceTracker.Data
                     //Get the newest recorded priceHistory
                     var newestPriceHistory = userProduct.Product.PriceHistories.Aggregate((a, x) => x.Timestamp > a.Timestamp ? x : a);
 
+
                     //If a change occurred create a new price history entry, else do nothing
                     if (currentPrice != newestPriceHistory.Price)
                     {
+
+                        ++itemChangeCount;
+
+                        emailMessage += "The Price of " + userProduct.Product.Name + " has changed from $" + newestPriceHistory.Price + " to $" + currentPrice + "<br>"; 
 
                         userProduct.Product.PriceHistories.Add(new ProductPriceHistory
                         {
@@ -140,6 +153,8 @@ namespace PriceTracker.Data
                     }
                 }
 
+                if(itemChangeCount > 0)
+                    await _emailSender.SendEmailAsync(user.Email, "eTrack Item Price changes for " + itemChangeCount + " Items", emailMessage);
 
             }
 
