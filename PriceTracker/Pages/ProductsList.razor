@@ -10,22 +10,28 @@
     <Searchcomponent></Searchcomponent>
 </p>
 
-@*TODO fix persistent loading*@
-<div class="spinner"></div>
 
-
-@* Displays all of the products in card form *@
-<div class="row">
-    @foreach (DisplayItem item in displayAllItems)
-    {
-        <ProductCardComponent prodItem="@item">
-        </ProductCardComponent>
-
-    }
-</div>
+@*Displays spinner while the product data is scraped*@
+@if (loadComplete == false)
+{
+        <div class="spinner"></div>
+}
+else
+{
+    @* Displays all of the products in card form *@
+    <div class="row">
+        @foreach (DisplayItem item in displayAllItems)
+        {
+            <ProductCardComponent prodItem="@item">
+            </ProductCardComponent>
+        }
+    </div>
+}
 
 
 @code {
+
+    private bool loadComplete = false;
 
     [Parameter]
     public String searchTerm { get; set; }
@@ -73,6 +79,7 @@
 
         // Scrape the websites and Format the data
         Parallel.Invoke(
+
             () => displayItemsMercari = formater.FormatMercari(scraper.ScrapeMercari(searchTerm, bool.Parse(mercariCheck))),
             () => displayItemsEbid = formater.FormatEBid(scraper.ScrapeEBid(searchTerm, bool.Parse(ebidCheck))),
             () => displayItemsPoshmark = formater.FormatPoshmark(scraper.ScrapePoshmark(searchTerm, bool.Parse(poshmarkCheck))),
@@ -84,6 +91,10 @@
         displayAllItems.AddRange(displayItemsEbid);
         displayAllItems.AddRange(displayItemsPoshmark);
         displayAllItems.AddRange(displayItemsEcrater);
+
+        loadComplete = true;
     }
 
+
 }
+

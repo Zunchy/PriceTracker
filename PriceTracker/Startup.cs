@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using PriceTracker.Areas.Identity;
 using PriceTracker.Areas.Identity.Pages.Account.Services;
 using PriceTracker.Data;
+using PriceTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,8 @@ namespace PriceTracker
             // email services
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            services.AddHostedService<PriceUpdateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

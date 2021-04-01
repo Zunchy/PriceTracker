@@ -7,7 +7,7 @@
 }
 else
 {
-    <div class="col-4">
+    @*<div class="col-4">
         <div class="card border-dark">
             <img class="card-img-top img-thumbnail" src="@prodItem.ItemImage" alt="Card image" />
             <div class="card-body">
@@ -32,6 +32,17 @@ else
                 <br />
                 <div class="card-footer">Product last updated X days ago</div>
             </div>
+        </div>
+    </div>*@
+    <div class="card">
+        <div class="imgBx">
+            <img src="@prodItem.ItemImage" />
+        </div>
+        <div class="contentBx">
+            <h2 class="title">@prodItem.ItemName</h2>
+            <h1 class="price">$@prodItem.ItemPrice</h1>
+            <a href="@prodItem.ItemLink" class="view">VIEW</a>
+            <a @onclick="(e => InitiateTrack(prodItem))" class="track">Track</a>
         </div>
     </div>
 }

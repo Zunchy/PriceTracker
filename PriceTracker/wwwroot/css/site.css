@@ -59,6 +59,7 @@ a, .btn-link {
         top: 0.5rem;
     }
 
+
 .spinner {
     border: 16px solid silver;
     border-top:  16px solid #337AB7;
@@ -70,6 +71,7 @@ a, .btn-link {
     left: 55%;
     position: absolute;
 }
+
 
 @keyframes spin {
     0% {
