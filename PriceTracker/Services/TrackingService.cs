@@ -71,19 +71,31 @@ namespace PriceTracker.Data
                     trackingProduct.Users.Add(user);
                 }
             }
-            /*dbContext.TrackedItems.Add(new TrackedItem
-            {
-                UserId = userManager.GetUserId(principle),
-                //ItemIdentifier = itemIdentifier,
-            });
-            await dbContext.SaveChangesAsync();*/
         }
 
         public async Task UnTrackItem(ClaimsPrincipal principle, string ItemIdentifier)
         {
-            //TrackedItem trackedItem = dbContext.TrackedItems.Find(ItemIdentifier);
-            //dbContext.TrackedItems.Remove(trackedItem);
-            //await dbContext.SaveChangesAsync();
+            var user = await _userManager.GetUserAsync(principle);
+
+            //Get product base on identifier(scraped url or ebayid)
+            var productToCheck = _product.GetProductByIdentifier(ItemIdentifier);
+
+            //find and delete userProduct associated with user
+            var userProductToDelete = productToCheck.UserProducts.Where(p => p.UserId == user.Id).FirstOrDefault();
+            productToCheck.UserProducts.Remove(userProductToDelete);
+            
+            //If no user is tracking this product anymore, remove from db
+            if(productToCheck.UserProducts.Count() == 0)
+            {
+                productToCheck.PriceHistories.Clear();
+                await _product.UpdateProductAsync(productToCheck);
+                await _product.DeleteProductAsync(productToCheck.ProductId);
+            }
+            else
+            {
+                await _product.UpdateProductAsync(productToCheck);
+            }
+
         }
 
         public async Task UpdateTrackedItemPrices()
