@@ -35,13 +35,14 @@ else
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var userPrinciple = authState.User;
+        List<UserProduct> usersProducts = new List<UserProduct>();
 
         if (userPrinciple.Identity.IsAuthenticated) // User is logged in
         {
-            List<UserProduct> usersProducts 
-                = TrackingService.GetUserProductsByUserId(userPrinciple.ToString());
+            var user = TrackingService.GetUserByPrincipal(userPrinciple);
+            usersProducts = TrackingService.GetUserProductsByUserId(user.Id);
         }
-        else // User is not logged in
+        else // User is not logged in Redirect to login page maybe
         {
 
         }

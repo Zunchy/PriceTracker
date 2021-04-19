@@ -183,9 +183,9 @@ namespace PriceTracker.Data
             return _product.GetProduct(productId);
         }
 
-        public async Task<ApplicationUser> GetUserByPrincipal(ClaimsPrincipal principal)
+        public ApplicationUser GetUserByPrincipal(ClaimsPrincipal principal)
         {
-            return await _userManager.GetUserAsync(principal);
+            return _userManager.Users.Where(u => u.Email == principal.Identity.Name).First();
         }
     }
 }
