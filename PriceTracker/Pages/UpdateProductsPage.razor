@@ -1,0 +1,32 @@
+﻿@page "/UpdateProductsPage"
+@inject TrackingService TrackingService
+@inject IJSRuntime JsRuntime
+
+<div class="container">
+    <h1>Search for a product</h1>
+    <Searchcomponent></Searchcomponent>
+</div>
+
+<button @onclick="(e => UpdateProducts())">Update Tracked Products</button>
+
+
+<div>
+    <p>
+        Use the button above to Update the Items you are currently tracking to check if the price has changed. Once the check is complete,
+        check your email and phone for notifications from us!
+    </p>
+</div>
+
+
+@code {
+
+    private bool loadComplete = true;
+
+    private void UpdateProducts()
+    {
+        TrackingService.UpdateTrackedItemPrices();
+
+        JsRuntime.InvokeAsync<object>("alert", "Update Successful!");
+    }
+
+}

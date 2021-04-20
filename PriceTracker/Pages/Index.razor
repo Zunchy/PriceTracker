@@ -10,8 +10,6 @@
     <Searchcomponent></Searchcomponent>
 </div>
 
-<button @onclick="(e => TestTracker())">Test</button>
-
 
 <div>
     <p>
@@ -24,15 +22,3 @@
         today by signing in!
     </p>
 </div>
-
-
-
-@code {
-
-    private void TestTracker()
-    {
-        TrackingService.UpdateTrackedItemPrices();
-
-    }
-
-}
