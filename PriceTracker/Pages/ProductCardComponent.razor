@@ -1,5 +1,7 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject TrackingService TrackingService
+@inject IJSRuntime JsRuntime
+
 
 @if (prodItem.ItemName == null || prodItem.ItemPrice.ToString() == null)
 {
@@ -7,31 +9,42 @@
 }
 else
 {
-    <div class="col-4">
-        <div class="card border-dark">
-            <img class="card-img-top img-thumbnail" src="@prodItem.ItemImage" alt="Card image" />
-            <div class="card-body">
-                <h4 class="card-title">@prodItem.ItemName</h4>
-                <p class="card-text">
-                    <span><strong>Price: $</strong></span>
-                    <span>@prodItem.ItemPrice</span>
-                </p>
-                <p class="card-text">
-                    <span><strong>Description: </strong></span>
-                    <span>Example text description</span>
-                </p>
-                <div class="row">
-                    <div class="col-4">
-                        <a href="@prodItem.ItemLink" class="btn btn-info btn-lg">View</a>
+    @*<div class="col-4">
+            <div class="card border-dark">
+                <img class="card-img-top img-thumbnail" src="@prodItem.ItemImage" alt="Card image" />
+                <div class="card-body">
+                    <h4 class="card-title">@prodItem.ItemName</h4>
+                    <p class="card-text">
+                        <span><strong>Price: $</strong></span>
+                        <span>@prodItem.ItemPrice</span>
+                    </p>
+                    <p class="card-text">
+                        <span><strong>Description: </strong></span>
+                        <span>Example text description</span>
+                    </p>
+                    <div class="row">
+                        <div class="col-4">
+                            <a href="@prodItem.ItemLink" class="btn btn-info btn-lg">View</a>
+                        </div>
+                        <div class="col-4"></div>
+                        <div class="col-4">
+                            <a @onclick="(e => InitiateTrack(prodItem))" class="btn btn-primary btn-lg">Track</a>
+                        </div><br />
                     </div>
-                    <div class="col-4"></div>
-                    <div class="col-4">
-                        <a @onclick="(e => InitiateTrack(prodItem))" class="btn btn-primary btn-lg">Track</a>
-                    </div><br />
+                    <br />
+                    <div class="card-footer">Product last updated X days ago</div>
                 </div>
-                <br />
-                <div class="card-footer">Product last updated X days ago</div>
             </div>
+        </div>*@
+    <div class="card">
+        <div class="imgBx">
+            <img src="@prodItem.ItemImage" />
+        </div>
+        <div class="contentBx">
+            <h2 class="title">@prodItem.ItemName</h2>
+            <h1 class="price">$@prodItem.ItemPrice</h1>
+            <a href="@prodItem.ItemLink" class="view">VIEW</a>
+            <a @onclick="(e => InitiateTrack(prodItem))" class="track">Track</a>
         </div>
     </div>
 }
@@ -46,6 +59,8 @@ else
         if (userPrinciple.Identity.IsAuthenticated)
         {
             await TrackingService.TrackItem(userPrinciple, item);
+
+            await JsRuntime.InvokeAsync<object>("alert", "Tracking Successful, view your newly tracked product in the my products page.");
         }
     }
 

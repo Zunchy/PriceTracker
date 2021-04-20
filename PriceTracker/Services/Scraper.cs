@@ -71,6 +71,24 @@ namespace PriceTracker.Data
             }
         }
 
+        public string ScrapeImageByMercariItem(string itemLink)
+        {
+            try
+            {
+                mercariDriver = new ChromeDriver(options);
+
+                string image = "";
+
+                String imagePath = itemLink.Split("/")[5];
+                image = $"https://mercari-images.global.ssl.fastly.net/photos/{imagePath}_1.jpg?1615326085&w=200&h=200&fitcrop&sharpen";
+
+                mercariDriver.Quit();
+
+                return image;
+            }
+            catch { return ""; }
+        }
+
         public double ScrapePriceByMercariItem(string itemLink)
         {
             mercariDriver = new ChromeDriver(options);
@@ -134,6 +152,25 @@ namespace PriceTracker.Data
             
         }
 
+        public string ScrapeImageByEbidItem(string itemLink)
+        {
+            try
+            {
+                eBidDriver = new ChromeDriver(options);
+
+                eBidDriver.Navigate().GoToUrl(itemLink);
+
+                IWebElement searchSpace = eBidDriver.FindElement(By.XPath("//div[@class='slider-wrap']"));
+                string image = searchSpace.FindElement(By.TagName("a")).GetAttribute("href");
+
+                mercariDriver.Quit();
+
+                return image;
+            }
+            catch { return ""; }
+
+        }
+
         public double ScrapePriceByEbidItem(string itemLink)
         {
             eBidDriver = new ChromeDriver(options);
@@ -193,6 +230,25 @@ namespace PriceTracker.Data
            
         }
 
+        public string ScrapeImageByPoshmarkItem(string itemLink)
+        {
+            try
+            {
+                poshmarkDriver = new ChromeDriver(options);
+
+                poshmarkDriver.Navigate().GoToUrl(itemLink);
+
+                IWebElement searchSpace = poshmarkDriver.FindElement(By.XPath("//div[@class='carousel__inner']"));
+                string image = searchSpace.FindElement(By.TagName("img")).GetAttribute("src");
+
+                poshmarkDriver.Quit();
+
+                return image;
+            }
+            catch { return ""; }
+
+        }
+
         public double ScrapePriceByPoshmarkItem(string itemLink)
         {
             poshmarkDriver = new ChromeDriver(options);
@@ -248,6 +304,24 @@ namespace PriceTracker.Data
                 return "";
             }
            
+        }
+
+        public string ScrapeImageByEcraterItem(string itemLink)
+        {
+            try
+            {
+                eCraterDriver = new ChromeDriver(options);
+
+                eCraterDriver.Navigate().GoToUrl(itemLink);
+
+                IWebElement searchSpace = eCraterDriver.FindElement(By.XPath("//div[@id='wBiggerImage']"));
+                string image = searchSpace.FindElement(By.TagName("a")).GetAttribute("data-image");
+
+                eCraterDriver.Quit();
+
+                return image;
+            }
+            catch { return ""; }
         }
 
         public double ScrapePriceByEcraterItem(string itemLink)

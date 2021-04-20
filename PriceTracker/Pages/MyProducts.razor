@@ -1,0 +1,96 @@
+﻿@page "/myproducts"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject TrackingService TrackingService
+@inject EbayService ProductService
+
+
+<h1>My Tracked Products:</h1>
+
+<p>
+    <Searchcomponent></Searchcomponent>
+</p>
+
+@*Displays spinner while the product data is scraped*@
+@if (loadComplete == false)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="row">
+        @foreach (DisplayItem item in displayItems)
+        {
+            <MyProductCardComponent prodItem="@item">
+            </MyProductCardComponent>
+        }
+    </div>
+}
+
+
+@code {
+    private bool loadComplete = false;
+
+    List<UserProduct> usersProducts;
+    List<DisplayItem> displayItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userPrinciple = authState.User;
+        usersProducts = new List<UserProduct>();
+        displayItems = new List<DisplayItem>();
+        Scraper scraper = new Scraper();
+
+        if (userPrinciple.Identity.IsAuthenticated) // User is logged in
+        {
+            var user = TrackingService.GetUserByPrincipal(userPrinciple);
+            usersProducts = TrackingService.GetUserProductsByUserId(user.Id);
+
+            foreach (UserProduct prod in usersProducts)
+            {
+
+                if (prod.Product.Source == "Ebay")
+                {
+                    DisplayItem newEbayItem = await ProductService.GetProductAsync(prod.Product.ProductIdentifier);
+
+                    displayItems.Add(newEbayItem);
+                }
+                else
+                {
+                    DisplayItem newScrapedItem = new DisplayItem();
+                    newScrapedItem.ItemPrice = prod.Product.PriceHistories.Aggregate((a, x) => x.Timestamp > a.Timestamp ? x : a).Price;
+                    newScrapedItem.ItemName = prod.Product.Name;
+                    newScrapedItem.ItemSource = prod.Product.Source;
+                    newScrapedItem.ItemLink = prod.Product.ProductIdentifier;
+
+                    switch (newScrapedItem.ItemSource)
+                    {
+                        case "Mercari":
+                            newScrapedItem.ItemImage = scraper.ScrapeImageByMercariItem(newScrapedItem.ItemLink);
+                            break;
+                        case "eBid":
+                            newScrapedItem.ItemImage = scraper.ScrapeImageByEbidItem(newScrapedItem.ItemLink);
+                            break;
+                        case "Poshmark":
+                            newScrapedItem.ItemImage = scraper.ScrapeImageByPoshmarkItem(newScrapedItem.ItemLink);
+                            break;
+                        case "eCrater":
+                            newScrapedItem.ItemImage = scraper.ScrapeImageByEcraterItem(newScrapedItem.ItemLink);
+                            break;
+
+                    }
+
+                    displayItems.Add(newScrapedItem);
+                }
+            }
+            loadComplete = true;
+
+        }
+        else // User is not logged in Redirect to login page maybe
+        {
+
+        }
+    }
+
+
+}
