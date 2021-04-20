@@ -1,6 +1,7 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject TrackingService TrackingService
 @inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
 
 
 @if (prodItem.ItemName == null || prodItem.ItemPrice.ToString() == null)
@@ -31,12 +32,14 @@ else
 
         if (userPrinciple.Identity.IsAuthenticated)
         {
-            if(item.ItemSource == "Ebay")
+            if (item.ItemSource == "Ebay")
                 await TrackingService.UnTrackItem(userPrinciple, item.ItemEbayId);
             else
                 await TrackingService.UnTrackItem(userPrinciple, item.ItemLink);
 
             await JsRuntime.InvokeAsync<object>("alert", "Untracking Successful");
+
+            NavigationManager.NavigateTo("/myproducts", forceLoad: true);
         }
     }
 
