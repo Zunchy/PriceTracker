@@ -1,6 +1,7 @@
 ﻿@page "/myproducts"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject TrackingService TrackingService
+@inject EbayService ProductService
 
 
 <h1>My Tracked Products:</h1>
@@ -16,31 +17,56 @@
 }
 else
 {
-    @* Displays all of the products in card form *@
-    @*<div class="row">
-        @foreach (DisplayItem item in displayAllItems)
+    <div class="row">
+        @foreach (DisplayItem item in displayItems)
         {
-            <ProductCardComponent prodItem="@item">
-            </ProductCardComponent>
+            <MyProductCardComponent prodItem="@item">
+            </MyProductCardComponent>
         }
-    </div>*@
+    </div>
 }
 
 
 @code {
     private bool loadComplete = false;
 
+    List<UserProduct> usersProducts;
+    List<DisplayItem> displayItems;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var userPrinciple = authState.User;
-        List<UserProduct> usersProducts = new List<UserProduct>();
+        usersProducts = new List<UserProduct>();
+        displayItems = new List<DisplayItem>();
 
         if (userPrinciple.Identity.IsAuthenticated) // User is logged in
         {
             var user = TrackingService.GetUserByPrincipal(userPrinciple);
             usersProducts = TrackingService.GetUserProductsByUserId(user.Id);
+
+            foreach (UserProduct prod in usersProducts)
+            {
+
+                if (prod.Product.Source == "Ebay")
+                {
+                    DisplayItem newEbayItem = await ProductService.GetProductAsync(prod.Product.ProductIdentifier);
+
+                    displayItems.Add(newEbayItem);
+                }
+                else
+                {
+                    DisplayItem newScrapedItem = new DisplayItem();
+                    newScrapedItem.ItemPrice = prod.Product.PriceHistories.Aggregate((a, x) => x.Timestamp > a.Timestamp ? x : a).Price;
+                    newScrapedItem.ItemName = prod.Product.Name;
+                    newScrapedItem.ItemSource = prod.Product.Source;
+                    newScrapedItem.ItemLink = prod.Product.ProductIdentifier;
+
+                    displayItems.Add(newScrapedItem);
+                }
+            }
+            loadComplete = true;
+
         }
         else // User is not logged in Redirect to login page maybe
         {

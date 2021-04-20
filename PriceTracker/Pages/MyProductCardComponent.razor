@@ -1,0 +1,43 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject TrackingService TrackingService
+@inject IJSRuntime JsRuntime
+
+
+@if (prodItem.ItemName == null || prodItem.ItemPrice.ToString() == null)
+{
+    <h2>Loading...</h2>
+}
+else
+{
+    <div class="card">
+        <div class="imgBx">
+            <img src="@prodItem.ItemImage" />
+        </div>
+        <div class="contentBx">
+            <h2 class="title">@prodItem.ItemName</h2>
+            <h1 class="price">$@prodItem.ItemPrice</h1>
+            <a href="@prodItem.ItemLink" class="view">VIEW</a>
+            <a @onclick="(e => UnTrackItem(prodItem))" class="track">Untrack</a>
+        </div>
+    </div>
+}
+
+@code {
+
+    public async Task UnTrackItem(DisplayItem item)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userPrinciple = authState.User;
+
+        if (userPrinciple.Identity.IsAuthenticated)
+        {
+            if(item.ItemSource == "Ebay")
+                await TrackingService.UnTrackItem(userPrinciple, item.ItemEbayId);
+            else
+                await TrackingService.UnTrackItem(userPrinciple, item.ItemLink);
+
+            await JsRuntime.InvokeAsync<object>("alert", "Untracking Successful");
+        }
+    }
+
+}
